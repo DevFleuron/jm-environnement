@@ -1,4 +1,5 @@
 import * as filesService from '../services/files.service.js'
+import { sendAllFilesAsZip } from '../services/files-zip.service.js'
 
 // Reçoit la requête de d'upload
 export async function uploadFile(req, res, next) {
@@ -25,6 +26,14 @@ export async function downloadFile(req, res, next) {
   try {
     const { id } = req.params
     await filesService.sendFile(id, res)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function downloadAllFiles(req, res, next) {
+  try {
+    await sendAllFilesAsZip(res)
   } catch (error) {
     next(error)
   }

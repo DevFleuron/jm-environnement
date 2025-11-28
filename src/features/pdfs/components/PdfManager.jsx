@@ -109,6 +109,12 @@ export default function PdfManager() {
             ))}
           </ul>
         )}
+        <a
+          href={`${API_URL}/api/files/download-all`}
+          className="inline-block mt-4 px-4 py-2 rounded bg-green-600 text-white text-sm"
+        >
+          Télécharger tous les fichiers
+        </a>
       </div>
     </div>
   )

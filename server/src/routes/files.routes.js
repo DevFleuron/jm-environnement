@@ -10,4 +10,6 @@ router.get('/', filesController.getFiles)
 
 router.get('/:id/download', filesController.downloadFile)
 
+router.get('/download-all', filesController.downloadAllFiles)
+
 export default router
