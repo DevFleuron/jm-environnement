@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev -p 3004\" \"npm run server:dev\"",
+    "dev": "concurrently \"next dev -p 3006\" \"npm run server:dev\"",
     "dev:front": "next dev",
     "server:dev": "cross-env PORT=3005 nodemon --cwd server src/server.js",
     "build": "next build",
-    "start": "next start -p 3004",
+    "start": "next start -p 3006",
     "lint": "eslint"
   },
   "dependencies": {
@@ -16,6 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.0.0",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "next": "16.0.5",
