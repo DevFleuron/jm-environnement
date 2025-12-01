@@ -22,9 +22,9 @@ export default function SocietesPage() {
     refetch()
     setShowModal(false)
   }
-
+  // CE FRONT EST TEMPORAIRE, TOUT EST A REFAIRE
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-5">
       <div className="flex gap-4">
         <div className="flex-1 relative">
           <svg

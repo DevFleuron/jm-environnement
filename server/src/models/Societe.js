@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const societeSchema = new mongoose.Schema(
   {
-    nomSociete: {
+    nom: {
       type: String,
       required: [true, 'Le nom de la société est requis'],
       trim: true,
