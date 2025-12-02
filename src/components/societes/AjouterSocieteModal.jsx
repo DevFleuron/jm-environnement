@@ -140,7 +140,7 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
                   name="numeroSiret"
                   value={formData.numeroSiret}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus: focus:border-sky-500 outline-none"
                 />
               </div>
               <div>
