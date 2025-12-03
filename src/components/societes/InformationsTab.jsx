@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { updateSociete } from '@/features/societes/api/societesApi'
+import { FiSave } from 'react-icons/fi'
 
 export default function InformationsTab({ societe, onUpdate }) {
   const [loading, setLoading] = useState(false)
@@ -54,80 +55,65 @@ export default function InformationsTab({ societe, onUpdate }) {
   }
 
   const inputClass =
-    'w-full px-3 py-2 border rounded-lg bg-sky-50 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none'
+    'w-full px-3 py-3 rounded-xs focus:ring-3 focus:ring-[#0c769e] bg-sky-50 font-bold outline-none'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Civilité</label>
           <select
             name="contact.civilite"
             value={formData.contact.civilite}
             onChange={handleChange}
             className={inputClass}
           >
-            <option value="">--</option>
+            <option value="">Civilité</option>
             <option value="M.">M.</option>
             <option value="Mme">Mme</option>
             <option value="Autre">Autre</option>
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
           <input
             type="text"
             name="contact.prenom"
+            placeholder="Prénom"
             value={formData.contact.prenom}
             onChange={handleChange}
             className={inputClass}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
           <input
             type="text"
             name="contact.nom"
             value={formData.contact.nom}
             onChange={handleChange}
             className={inputClass}
+            placeholder="Nom"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
           <input
             type="text"
             name="adresse"
+            placeholder="Adresse"
             value={formData.adresse}
             onChange={handleChange}
             className={inputClass}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-          <input
-            type="tel"
-            name="contact.telephone"
-            value={formData.contact.telephone}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">CP / Ville</label>
           <div className="flex gap-2">
             <input
               type="text"
               name="codePostal"
               value={formData.codePostal}
               onChange={handleChange}
-              placeholder="CP"
+              placeholder="Code postal"
               className={`${inputClass} w-24`}
             />
             <input
@@ -140,11 +126,24 @@ export default function InformationsTab({ societe, onUpdate }) {
             />
           </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Mobile</label>
+          <input
+            type="tel"
+            name="contact.telephone"
+            placeholder="Téléphone fixe"
+            value={formData.contact.telephone}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+        <div>
           <input
             type="tel"
             name="contact.mobile"
+            placeholder="Téléphone portable"
             value={formData.contact.mobile}
             onChange={handleChange}
             className={inputClass}
@@ -154,20 +153,20 @@ export default function InformationsTab({ societe, onUpdate }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Raison sociale</label>
           <input
             type="text"
             name="raisonSociale"
+            placeholder="Raison sociale"
             value={formData.raisonSociale}
             onChange={handleChange}
             className={inputClass}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
           <input
             type="email"
             name="contact.email"
+            placeholder="Email"
             value={formData.contact.email}
             onChange={handleChange}
             className={inputClass}
@@ -177,21 +176,21 @@ export default function InformationsTab({ societe, onUpdate }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité</label>
           <input
             type="text"
             name="secteurActivite"
+            placeholder="Secteur d'activité"
             value={formData.secteurActivite}
             onChange={handleChange}
             className={inputClass}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Fonction</label>
           <input
             type="text"
             name="contact.fonction"
             value={formData.contact.fonction}
+            placeholder="Fonction"
             onChange={handleChange}
             className={inputClass}
           />
@@ -200,20 +199,20 @@ export default function InformationsTab({ societe, onUpdate }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Forme juridique</label>
           <input
             type="text"
             name="formeJuridique"
+            placeholder="Forme juridique"
             value={formData.formeJuridique}
             onChange={handleChange}
             className={inputClass}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de Siret</label>
           <input
             type="text"
             name="numeroSiret"
+            placeholder="Numéro de siret"
             value={formData.numeroSiret}
             onChange={handleChange}
             className={inputClass}
@@ -224,10 +223,10 @@ export default function InformationsTab({ societe, onUpdate }) {
       <div className="grid grid-cols-2 gap-4">
         <div></div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de Siren</label>
           <input
             type="text"
             name="numeroSiren"
+            placeholder="Numéro de siren"
             value={formData.numeroSiren}
             onChange={handleChange}
             className={inputClass}
@@ -239,8 +238,10 @@ export default function InformationsTab({ societe, onUpdate }) {
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 disabled:opacity-50 flex items-center gap-2"
+          className="px-8 py-3 bg-[#0c769e] font-bold text-white rounded-xl hover:bg-white hover:text-[#0c769e] transition-all duration-300 disabled:opacity-50 cursor-pointer flex items-center gap-2"
         >
+          <FiSave className="w-6 h-6" />
+
           {loading ? 'Enregistrement...' : 'Enregistrer'}
         </button>
       </div>

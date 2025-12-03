@@ -35,7 +35,10 @@ export function useSociete(id) {
   const [error, setError] = useState(null)
 
   const fetchSociete = useCallback(async () => {
-    if (!id) return
+    if (!id) {
+      setLoading(false)
+      return
+    }
     try {
       setLoading(true)
       setError(null)

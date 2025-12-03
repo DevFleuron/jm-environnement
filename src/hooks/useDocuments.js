@@ -9,7 +9,10 @@ export function useDocuments(societeId) {
   const [error, setError] = useState(null)
 
   const fetchDocuments = useCallback(async () => {
-    if (!societeId) return
+    if (!societeId) {
+      setLoading(false)
+      return
+    }
     try {
       setLoading(true)
       setError(null)

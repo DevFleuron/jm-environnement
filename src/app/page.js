@@ -24,7 +24,6 @@ export default function SocietesPage() {
     refetch()
     setShowModal(false)
   }
-  // CE FRONT EST TEMPORAIRE, TOUT EST A REFAIRE
   return (
     <div className="space-y-6 px-10">
       <div className="flex gap-4 border border-xs p-2">
