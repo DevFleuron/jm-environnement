@@ -1,10 +1,16 @@
-import { Router } from 'express'
-import * as installationsController from '../controllers/installation.controller.js'
+import { Router } from "express";
+import * as installationsController from "../controllers/installation.controller.js";
+import { authenticate, canWrite } from "../middlewares/auth.middleware.js";
 
-const router = Router()
+const router = Router();
 
-router.get('/societe/:societeId', installationsController.getBySociete)
-router.put('/societe/:societeId', installationsController.upsert)
-router.delete('/:id', installationsController.remove)
+// Permet que chaque route nécéssite d'être connecté
+router.use(authenticate);
 
-export default router
+router.get("/societe/:societeId", installationsController.getBySociete);
+
+// Le canWrite permet l'écriture pour les admins seulement
+router.put("/societe/:societeId", canWrite, installationsController.upsert);
+router.delete("/:id", canWrite, installationsController.remove);
+
+export default router;
