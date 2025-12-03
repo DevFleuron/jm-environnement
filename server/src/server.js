@@ -1,54 +1,56 @@
-import express from 'express'
-import 'dotenv/config'
-import cors from 'cors'
-import morgan from 'morgan'
+import express from "express";
+import "dotenv/config";
+import cors from "cors";
+import morgan from "morgan";
 
-import { connectDB } from './config/db.js'
-import healthRoutes from './routes/health.routes.js'
-import filesRoutes from './routes/files.routes.js'
-import societesRoutes from './routes/societes.routes.js'
-import documentsRoutes from './routes/documents.routes.js'
-import installationsRoutes from './routes/installations.routes.js'
+import { connectDB } from "./config/db.js";
+import healthRoutes from "./routes/health.routes.js";
+import filesRoutes from "./routes/files.routes.js";
+import societesRoutes from "./routes/societes.routes.js";
+import documentsRoutes from "./routes/documents.routes.js";
+import installationsRoutes from "./routes/installations.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
-const app = express()
+const app = express();
 
 // Connexion MongoDB
-connectDB()
+connectDB();
 
-app.use(cors())
-app.use(morgan('dev'))
-app.use(express.json())
+app.use(cors());
+app.use(morgan("dev"));
+app.use(express.json());
 
-const PORT = process.env.PORT || 3005
+const PORT = process.env.PORT || 3005;
 
 // Routes
-app.use('/api', healthRoutes)
-app.use('/api/files', filesRoutes)
-app.use('/api/societes', societesRoutes)
-app.use('/api/documents', documentsRoutes)
-app.use('/api/installations', installationsRoutes)
+app.use("/api", healthRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/files", filesRoutes);
+app.use("/api/societes", societesRoutes);
+app.use("/api/documents", documentsRoutes);
+app.use("/api/installations", installationsRoutes);
 
 // Gestion des erreurs
 app.use((err, req, res, next) => {
-  console.error(err)
+  console.error(err);
 
-  if (err.name === 'MulterError') {
-    return res.status(400).json({ message: err.message })
+  if (err.name === "MulterError") {
+    return res.status(400).json({ message: err.message });
   }
 
-  if (err.name === 'ValidationError') {
-    return res.status(400).json({ message: err.message })
+  if (err.name === "ValidationError") {
+    return res.status(400).json({ message: err.message });
   }
 
-  if (err.name === 'CastError') {
-    return res.status(400).json({ message: 'ID invalide' })
+  if (err.name === "CastError") {
+    return res.status(400).json({ message: "ID invalide" });
   }
 
   res.status(500).json({
-    message: err.message || 'Erreur serveur',
-  })
-})
+    message: err.message || "Erreur serveur",
+  });
+});
 
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`)
-})
+  console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`);
+});
