@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useInstallation } from '@/hooks/useInstallation'
 import { saveInstallation } from '@/features/installations/api/installationsApi'
+import { FiSave } from 'react-icons/fi'
 
 export default function InstallationTab({ societeId }) {
   const { installation, loading } = useInstallation(societeId)
@@ -65,16 +66,17 @@ export default function InstallationTab({ societeId }) {
   }
 
   const inputClass =
-    'w-full px-3 py-2 border rounded-lg bg-sky-50 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none'
+    'w-full px-3 py-3 rounded-xs focus:ring-3 focus:ring-[#0c769e] bg-sky-50 font-bold outline-none'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nom de l'auditeur</label>
+          <label className="block text-sm font-bold mb-1">Nom de l'auditeur</label>
           <input
             type="text"
             name="nomAuditeur"
+            placeholder="Carvalho"
             value={formData.nomAuditeur}
             onChange={handleChange}
             className={inputClass}
@@ -85,7 +87,7 @@ export default function InstallationTab({ societeId }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Date de l'audite</label>
+          <label className="block text-sm font-bold mb-1">Date de l'audite</label>
           <input
             type="date"
             name="dateAudite"
@@ -99,12 +101,11 @@ export default function InstallationTab({ societeId }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nom de l'installateur
-          </label>
+          <label className="block text-sm font-bold mb-1">Nom de l'installateur</label>
           <input
             type="text"
             name="nomInstallateur"
+            placeholder="Chevalier"
             value={formData.nomInstallateur}
             onChange={handleChange}
             className={inputClass}
@@ -115,10 +116,11 @@ export default function InstallationTab({ societeId }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Type de produit</label>
+          <label className="block text-sm font-bold mb-1">Type de produit</label>
           <input
             type="text"
             name="typeProduit"
+            placeholder="Led"
             value={formData.typeProduit}
             onChange={handleChange}
             className={inputClass}
@@ -129,9 +131,7 @@ export default function InstallationTab({ societeId }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nombre de produit installé
-          </label>
+          <label className="block text-sm font-bold mb-1">Nombre de produit installé</label>
           <select
             name="nombreProduitInstalle"
             value={formData.nombreProduitInstalle}
@@ -150,9 +150,7 @@ export default function InstallationTab({ societeId }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Date de l'installation
-          </label>
+          <label className="block text-sm font-bold mb-1">Date de l'installation</label>
           <input
             type="date"
             name="dateInstallation"
@@ -166,9 +164,7 @@ export default function InstallationTab({ societeId }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Date de fin de pose
-          </label>
+          <label className="block text-sm font-bold mb-1">Date de fin de pose</label>
           <input
             type="date"
             name="dateFinPose"
@@ -182,7 +178,7 @@ export default function InstallationTab({ societeId }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Audite accepté ?</label>
+          <label className="block text-sm font-bold mb-1">Audite accepté ?</label>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2">
               <input
@@ -190,9 +186,9 @@ export default function InstallationTab({ societeId }) {
                 name="auditeAccepteOui"
                 checked={formData.auditeAccepte === true}
                 onChange={handleChange}
-                className="rounded"
+                className="rounded h-4 w-4"
               />
-              Oui
+              <span className="text-sm font-bold leading-none">Oui</span>
             </label>
             <label className="flex items-center gap-2">
               <input
@@ -200,9 +196,9 @@ export default function InstallationTab({ societeId }) {
                 name="auditeAccepteNon"
                 checked={formData.auditeAccepte === false}
                 onChange={handleChange}
-                className="rounded"
+                className="rounded h-4 w-4"
               />
-              Non
+              <span className="text-sm font-bold leading-none">Non</span>
             </label>
           </div>
         </div>
@@ -210,9 +206,9 @@ export default function InstallationTab({ societeId }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Commentaire</label>
         <textarea
           name="commentaire"
+          placeholder="Commentaire"
           value={formData.commentaire}
           onChange={handleChange}
           rows={4}
@@ -224,8 +220,9 @@ export default function InstallationTab({ societeId }) {
         <button
           type="submit"
           disabled={saving}
-          className="px-6 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 disabled:opacity-50 flex items-center gap-2"
+          className="px-8 py-3 bg-[#0c769e] font-bold text-white rounded-xl hover:bg-white hover:text-[#0c769e] transition-all duration-300 disabled:opacity-50 cursor-pointer flex items-center gap-2"
         >
+          <FiSave className="w-6 h-6" />
           {saving ? 'Enregistrement...' : 'Enregistrer'}
         </button>
       </div>

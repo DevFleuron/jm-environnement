@@ -7,6 +7,8 @@ import {
   downloadDocument,
   deleteDocument,
 } from '@/features/documents/api/documentsApi'
+import { MdOutlineDownloadForOffline } from 'react-icons/md'
+import { PiUploadSimpleBold } from 'react-icons/pi'
 
 const TYPES_DOCUMENTS = [
   { value: 'devis', label: 'Devis' },
@@ -104,62 +106,22 @@ export default function DocumentsTab({ societeId }) {
   const documentsManquants = DOCUMENTS_REQUIS.filter((type) => !typesPresents.includes(type))
   const getTypeLabel = (type) => TYPES_DOCUMENTS.find((t) => t.value === type)?.label || type
 
-  if (loading) {
-    return <div className="text-center py-8 text-gray-500">Chargement...</div>
-  }
+  // if (loading) {
+  //   return <div className="text-center py-8 text-gray-500">Chargement...</div>
+  // }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-end gap-2">
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileSelect}
-          accept=".pdf"
-          className="hidden"
-        />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 disabled:opacity-50"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-            />
-          </svg>
-          {uploading ? 'Import...' : 'Importer'}
-        </button>
-        <button
-          onClick={downloadSelected}
-          disabled={selectedDocs.length === 0}
-          className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-          Télécharger
-        </button>
-      </div>
-
-      <div className="border rounded-lg overflow-hidden">
-        <div className="bg-gray-50 px-4 py-2 border-b">
+    <div className="space-y-4 grid grid-cols-2">
+      <div className="overflow-hidden">
+        <div className="px-4 py-2">
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={selectedDocs.length === documents.length && documents.length > 0}
               onChange={toggleSelectAll}
-              className="rounded"
+              className="rounded h-4 w-4"
             />
-            <span className="text-sm text-gray-600">Tout sélectionner</span>
+            <span className="text-base font-bold">Tout sélectionner</span>
           </label>
         </div>
 
@@ -225,8 +187,33 @@ export default function DocumentsTab({ societeId }) {
           </div>
         )}
       </div>
+      <div className="w-fit ml-auto flex flex-col justify-items-end space-y-8 ">
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileSelect}
+          accept=".pdf"
+          className="hidden"
+        />
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="flex items-center text-base font-bold gap-2 px-4 py-2 bg-[#0c769e] text-white rounded-2xl cursor-pointer hover:bg-white hover:text-[#0c769e] transition-all duration-180 disabled:opacity-50"
+        >
+          <PiUploadSimpleBold className="w-6 h-6" />
+          {uploading ? 'Import...' : 'Importer'}
+        </button>
+        <button
+          onClick={downloadSelected}
+          disabled={selectedDocs.length === 0}
+          className="flex items-center gap-2 px-4 py-2 text-base font-bold bg-white border-3 cursor-pointer border-[#0c769e] hover:bg-[#0c769e] hover:text-white transition-all duration-180 rounded-2xl"
+        >
+          <MdOutlineDownloadForOffline className="w-6 h-6" />
+          Télécharger
+        </button>
+      </div>
 
-      {documentsManquants.length > 0 && (
+      {/* {documentsManquants.length > 0 && (
         <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -241,7 +228,7 @@ export default function DocumentsTab({ societeId }) {
             complet
           </span>
         </div>
-      )}
+      )} */}
     </div>
   )
 }
