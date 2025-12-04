@@ -1,32 +1,32 @@
 // app/societes/[id]/page.jsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { useSociete } from "@/hooks/useSocietes";
-import { useAuth } from "@/components/AuthProvider";
-import api from "@/lib/axios.js";
-import InformationsTab from "@/components/societes/InformationsTab";
-import DocumentsTab from "@/components/societes/DocumentsTab";
-import InstallationTab from "@/components/societes/InstallationTab";
-import { HiBuildingOffice2 } from "react-icons/hi2";
-import { IoPerson } from "react-icons/io5";
-import { FiTrash2 } from "react-icons/fi";
+import { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useSociete } from '@/hooks/useSocietes'
+import { useAuth } from '@/components/AuthProvider'
+import api from '@/lib/axios.js'
+import InformationsTab from '@/components/societes/InformationsTab'
+import DocumentsTab from '@/components/societes/DocumentsTab'
+import InstallationTab from '@/components/societes/InstallationTab'
+import { HiBuildingOffice2 } from 'react-icons/hi2'
+import { IoPerson } from 'react-icons/io5'
+import { FiTrash2 } from 'react-icons/fi'
 
 const TABS = [
-  { id: "informations", label: "Informations entreprise" },
-  { id: "documents", label: "Documents" },
-  { id: "installation", label: "Installation" },
-];
+  { id: 'informations', label: 'Informations entreprise' },
+  { id: 'documents', label: 'Documents' },
+  { id: 'installation', label: 'Installation' },
+]
 
 export default function SocieteDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const { isAdmin } = useAuth();
-  const { societe, setSociete, loading, error } = useSociete(params.id);
-  const [activeTab, setActiveTab] = useState("informations");
-  const [deleting, setDeleting] = useState(false);
+  const params = useParams()
+  const router = useRouter()
+  const { isAdmin } = useAuth()
+  const { societe, setSociete, loading, error } = useSociete(params.id)
+  const [activeTab, setActiveTab] = useState('informations')
+  const [deleting, setDeleting] = useState(false)
 
   async function handleDelete() {
     const confirmMessage = ` ATTENTION !!
@@ -39,21 +39,21 @@ Cette action est IRRÉVERSIBLE et supprimera :
 - Tous les documents associés
 - Toutes les installations associées
 
-Êtes-vous absolument sûr de vouloir continuer ?`;
+Êtes-vous absolument sûr de vouloir continuer ?`
 
     if (!confirm(confirmMessage)) {
-      return;
+      return
     }
 
     try {
-      setDeleting(true);
-      await api.delete(`/societes/${params.id}`);
+      setDeleting(true)
+      await api.delete(`/societes/${params.id}`)
 
       // Redirection vers la liste avec message de succès
-      router.push("/?deleted=true");
+      router.push('/?deleted=true')
     } catch (error) {
-      alert(error.response?.data?.message || "Erreur lors de la suppression");
-      setDeleting(false);
+      alert(error.response?.data?.message || 'Erreur lors de la suppression')
+      setDeleting(false)
     }
   }
 
@@ -62,15 +62,13 @@ Cette action est IRRÉVERSIBLE et supprimera :
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00a3c4]"></div>
       </div>
-    );
+    )
   }
 
   if (error || !societe) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <div className="text-xl text-gray-500">
-          {error || "Société non trouvée"}
-        </div>
+        <div className="text-xl text-gray-500">{error || 'Société non trouvée'}</div>
         <Link
           href="/societes"
           className="px-4 py-2 bg-[#0c769e] text-white rounded-lg hover:bg-[#095a7a] transition-colors"
@@ -78,7 +76,7 @@ Cette action est IRRÉVERSIBLE et supprimera :
           ← Retour à la liste
         </Link>
       </div>
-    );
+    )
   }
 
   return (
@@ -120,9 +118,7 @@ Cette action est IRRÉVERSIBLE et supprimera :
           <HiBuildingOffice2 className="w-9 h-9" color="#0c769e" />
           <div>
             <h1 className="font-bold text-xl text-gray-900">{societe.nom}</h1>
-            {societe.ville && (
-              <p className="text-sm text-gray-500">{societe.ville}</p>
-            )}
+            {societe.ville && <p className="text-sm text-gray-500">{societe.ville}</p>}
           </div>
         </div>
 
@@ -134,9 +130,7 @@ Cette action est IRRÉVERSIBLE et supprimera :
                 {societe.contact?.prenom} {societe.contact?.nom}
               </p>
               {societe.contact?.fonction && (
-                <p className="text-sm text-gray-500">
-                  {societe.contact.fonction}
-                </p>
+                <p className="text-sm text-gray-500">{societe.contact.fonction}</p>
               )}
             </div>
           </div>
@@ -152,8 +146,8 @@ Cette action est IRRÉVERSIBLE et supprimera :
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 text-sm font-bold transition-colors relative ${
                 activeTab === tab.id
-                  ? "text-[#0c769e] border-b-2 border-[#0c769e]"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? 'text-[#0c769e] border-b-2 border-[#0c769e]'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               {tab.label}
@@ -162,15 +156,13 @@ Cette action est IRRÉVERSIBLE et supprimera :
         </div>
 
         <div className="p-6">
-          {activeTab === "informations" && (
+          {activeTab === 'informations' && (
             <InformationsTab societe={societe} onUpdate={setSociete} />
           )}
-          {activeTab === "documents" && <DocumentsTab societeId={params.id} />}
-          {activeTab === "installation" && (
-            <InstallationTab societeId={params.id} />
-          )}
+          {activeTab === 'documents' && <DocumentsTab societeId={params.id} />}
+          {activeTab === 'installation' && <InstallationTab societeId={params.id} />}
         </div>
       </div>
     </div>
-  );
+  )
 }
