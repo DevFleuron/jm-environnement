@@ -66,143 +66,118 @@ export default function InstallationTab({ societeId }) {
   }
 
   const inputClass =
-    'w-full px-3 py-3 rounded-xs focus:ring-3 focus:ring-[#0c769e] bg-sky-50 font-bold outline-none'
+    'w-[480px] px-3 py-2 rounded-xs focus:ring-3 focus:ring-[#0c769e] bg-white font-bold outline-none'
+
+  const labelClass = 'block w-48 whitespace-nowrap text-sm font-bold'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-1">Nom de l'auditeur</label>
-          <input
-            type="text"
-            name="nomAuditeur"
-            placeholder="Carvalho"
-            value={formData.nomAuditeur}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div></div>
+      <div className="flex items-center gap-5">
+        <label className={labelClass}>Nom de l'auditeur</label>
+        <input
+          type="text"
+          name="nomAuditeur"
+          placeholder="Carvalho"
+          value={formData.nomAuditeur}
+          onChange={handleChange}
+          className={inputClass}
+        />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-1">Date de l'audite</label>
-          <input
-            type="date"
-            name="dateAudite"
-            value={formData.dateAudite}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div></div>
+      <div className="flex items-center gap-5">
+        <label className={labelClass}>Date de l'audite</label>
+        <input
+          type="date"
+          name="dateAudite"
+          value={formData.dateAudite}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
+      <div className="flex items-center gap-5">
+        <label className={labelClass}>Nom de l'installateur</label>
+        <input
+          type="text"
+          name="nomInstallateur"
+          placeholder="Chevalier"
+          value={formData.nomInstallateur}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
+      <div className="flex items-center gap-5">
+        <label className={labelClass}>Type de produit</label>
+        <input
+          type="text"
+          name="typeProduit"
+          placeholder="Led"
+          value={formData.typeProduit}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
+      <div className="flex items-center gap-5">
+        <label className={labelClass}>Nombre de produit installé</label>
+        <select
+          name="nombreProduitInstalle"
+          value={formData.nombreProduitInstalle}
+          onChange={handleChange}
+          className={`${inputClass} w-24`}
+        >
+          {[...Array(10)].map((_, i) => (
+            <option key={i + 1} value={i + 1}>
+              {String(i + 1).padStart(2, '0')}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-1">Nom de l'installateur</label>
-          <input
-            type="text"
-            name="nomInstallateur"
-            placeholder="Chevalier"
-            value={formData.nomInstallateur}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div></div>
+      <div className="flex items-center gap-5">
+        <label className={labelClass}>Date de l'installation</label>
+        <input
+          type="date"
+          name="dateInstallation"
+          value={formData.dateInstallation}
+          onChange={handleChange}
+          className={inputClass}
+        />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-1">Type de produit</label>
-          <input
-            type="text"
-            name="typeProduit"
-            placeholder="Led"
-            value={formData.typeProduit}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div></div>
+      <div className="flex items-center gap-5">
+        <label className={labelClass}>Date de fin de pose</label>
+        <input
+          type="date"
+          name="dateFinPose"
+          value={formData.dateFinPose}
+          onChange={handleChange}
+          className={inputClass}
+        />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-1">Nombre de produit installé</label>
-          <select
-            name="nombreProduitInstalle"
-            value={formData.nombreProduitInstalle}
-            onChange={handleChange}
-            className={`${inputClass} w-24`}
-          >
-            {[...Array(10)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {String(i + 1).padStart(2, '0')}
-              </option>
-            ))}
-          </select>
+      <div className="flex items-center gap-5">
+        <label className={labelClass}>Audite accepté ?</label>
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="auditeAccepteOui"
+              checked={formData.auditeAccepte === true}
+              onChange={handleChange}
+              className="rounded h-4 w-4"
+            />
+            <span className="text-sm font-bold leading-none">Oui</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="auditeAccepteNon"
+              checked={formData.auditeAccepte === false}
+              onChange={handleChange}
+              className="rounded h-4 w-4"
+            />
+            <span className="text-sm font-bold leading-none">Non</span>
+          </label>
         </div>
-        <div></div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-1">Date de l'installation</label>
-          <input
-            type="date"
-            name="dateInstallation"
-            value={formData.dateInstallation}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div></div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-1">Date de fin de pose</label>
-          <input
-            type="date"
-            name="dateFinPose"
-            value={formData.dateFinPose}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div></div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-1">Audite accepté ?</label>
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="auditeAccepteOui"
-                checked={formData.auditeAccepte === true}
-                onChange={handleChange}
-                className="rounded h-4 w-4"
-              />
-              <span className="text-sm font-bold leading-none">Oui</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="auditeAccepteNon"
-                checked={formData.auditeAccepte === false}
-                onChange={handleChange}
-                className="rounded h-4 w-4"
-              />
-              <span className="text-sm font-bold leading-none">Non</span>
-            </label>
-          </div>
-        </div>
-        <div></div>
       </div>
 
       <div>
@@ -212,7 +187,7 @@ export default function InstallationTab({ societeId }) {
           value={formData.commentaire}
           onChange={handleChange}
           rows={4}
-          className={inputClass}
+          className="w-full px-3 py-2 rounded-xs focus:ring-3 focus:ring-[#0c769e] bg-white font-bold outline-none"
         />
       </div>
 

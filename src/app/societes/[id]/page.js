@@ -9,6 +9,7 @@ import DocumentsTab from '@/components/societes/DocumentsTab'
 import InstallationTab from '@/components/societes/InstallationTab'
 import { HiBuildingOffice2 } from 'react-icons/hi2'
 import { IoPerson } from 'react-icons/io5'
+import { FaArrowLeftLong } from 'react-icons/fa6'
 
 const TABS = [
   { id: 'informations', label: 'Informations entreprise' },
@@ -42,9 +43,15 @@ export default function SocieteDetailPage() {
 
   return (
     <div className="space-y-6 p-10">
-      <Link href="/" className="text-sky-500 hover:text-sky-600 text-sm">
-        ← Retour à la liste
-      </Link>
+      <div className="flex flex-row gap-2">
+        <Link
+          href="/"
+          className="flex items-center text-white p-3 bg-[#0c769e] rounded-xl font-bold text-sm hover:bg-[#00a3c4] gap-2"
+        >
+          <FaArrowLeftLong />
+          Retour à la liste
+        </Link>
+      </div>
 
       <div className="flex rounded-xs border-3 border-[#0c769e] items-center justify-between p-4">
         <div className="flex items-center gap-3">
@@ -74,7 +81,7 @@ export default function SocieteDetailPage() {
           ))}
         </div>
 
-        <div className="p-6 bg-[#00a3c4]">
+        <div className="p-6 bg-[#c0e4f0]">
           {activeTab === 'informations' && (
             <InformationsTab societe={societe} onUpdate={setSociete} />
           )}

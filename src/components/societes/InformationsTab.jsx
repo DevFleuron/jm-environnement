@@ -55,11 +55,14 @@ export default function InformationsTab({ societe, onUpdate }) {
   }
 
   const inputClass =
-    'w-full px-3 py-3 rounded-xs focus:ring-3 focus:ring-[#0c769e] bg-sky-50 font-bold outline-none'
+    'w-full px-3 bg-white py-2 rounded-xs focus:ring-3 focus:ring-[#0c769e] font-bold outline-none'
+
+  const labelClass = 'block w-48 whitespace-nowrap text-sm font-bold'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-3 gap-4">
+        <label className={labelClass}>Nom de l'auditeur</label>
         <div>
           <select
             name="contact.civilite"
