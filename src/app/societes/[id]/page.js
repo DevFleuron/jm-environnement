@@ -155,7 +155,7 @@ Cette action est IRRÉVERSIBLE et supprimera :
           ))}
         </div>
 
-        <div className="p-6">
+        <div className="bg-[#c0e4f0] p-6">
           {activeTab === 'informations' && (
             <InformationsTab societe={societe} onUpdate={setSociete} />
           )}

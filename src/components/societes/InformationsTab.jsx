@@ -57,26 +57,28 @@ export default function InformationsTab({ societe, onUpdate }) {
   const inputClass =
     'w-full px-3 bg-white py-2 rounded-xs focus:ring-3 focus:ring-[#0c769e] font-bold outline-none'
 
-  const labelClass = 'block w-48 whitespace-nowrap text-sm font-bold'
+  const labelClass = 'block whitespace-nowrap text-sm font-bold'
+  const inputLabel = 'flex items-center gap-5'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-3 gap-4">
-        <label className={labelClass}>Nom de l'auditeur</label>
-        <div>
+      <div className="grid grid-cols-3 gap-10">
+        <div className={inputLabel}>
+          <label className={labelClass}>Civilité</label>
           <select
             name="contact.civilite"
             value={formData.contact.civilite}
             onChange={handleChange}
             className={inputClass}
+            placeholder="- -"
           >
-            <option value="">Civilité</option>
             <option value="M.">M.</option>
             <option value="Mme">Mme</option>
             <option value="Autre">Autre</option>
           </select>
         </div>
-        <div>
+        <div className={inputLabel}>
+          <label className={labelClass}>Prénom</label>
           <input
             type="text"
             name="contact.prenom"
@@ -86,7 +88,8 @@ export default function InformationsTab({ societe, onUpdate }) {
             className={inputClass}
           />
         </div>
-        <div>
+        <div className={inputLabel}>
+          <label className={labelClass}>Nom</label>
           <input
             type="text"
             name="contact.nom"
@@ -97,60 +100,69 @@ export default function InformationsTab({ societe, onUpdate }) {
           />
         </div>
       </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="text"
-            name="adresse"
-            placeholder="Adresse"
-            value={formData.adresse}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols gap-4">
+          <div className={inputLabel}>
+            <label className={labelClass}>Adresse</label>
             <input
               type="text"
-              name="codePostal"
-              value={formData.codePostal}
+              name="adresse"
+              placeholder="Adresse"
+              value={formData.adresse}
               onChange={handleChange}
-              placeholder="Code postal"
-              className={`${inputClass} w-24`}
-            />
-            <input
-              type="text"
-              name="ville"
-              value={formData.ville}
-              onChange={handleChange}
-              placeholder="Ville"
               className={inputClass}
             />
           </div>
+          <div>
+            <div className="flex gap-4">
+              <div className={inputLabel}>
+                <label className={labelClass}>Code postal</label>
+                <input
+                  type="text"
+                  name="codePostal"
+                  value={formData.codePostal}
+                  onChange={handleChange}
+                  placeholder="Code postal"
+                  className={`${inputClass} w-24`}
+                />
+              </div>
+              <div className={inputLabel}>
+                <label className={labelClass}>Ville</label>
+                <input
+                  type="text"
+                  name="ville"
+                  value={formData.ville}
+                  onChange={handleChange}
+                  placeholder="Ville"
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="tel"
-            name="contact.telephone"
-            placeholder="Téléphone fixe"
-            value={formData.contact.telephone}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <input
-            type="tel"
-            name="contact.mobile"
-            placeholder="Téléphone portable"
-            value={formData.contact.mobile}
-            onChange={handleChange}
-            className={inputClass}
-          />
+        <div className="grid grid-cols gap-4">
+          <div>
+            <label className={labelClass}>Téléphone fixe</label>
+            <input
+              type="tel"
+              name="contact.telephone"
+              placeholder="Téléphone fixe"
+              value={formData.contact.telephone}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Téléphone portable</label>
+            <input
+              type="tel"
+              name="contact.mobile"
+              placeholder="Téléphone portable"
+              value={formData.contact.mobile}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
         </div>
       </div>
 
