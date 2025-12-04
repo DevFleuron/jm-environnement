@@ -5,6 +5,15 @@ import { authenticate, isAdmin } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+router.post("/register", async (req, res, next) => {
+  try {
+    const user = await authService.createUser(req.body, "admin");
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 // Routes publiques
 router.post("/login", authController.login);
 

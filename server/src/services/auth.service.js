@@ -14,7 +14,7 @@ export async function login(username, password) {
   }
 
   // On trouve l'utilisateur
-  const user = (await User.findOne({ username })).select("+password");
+  const user = await User.findOne({ username }).select("+password");
   if (!user) {
     throw new Error("Identifiant ou mot de passe incorrect");
   }

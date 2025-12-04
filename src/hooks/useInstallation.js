@@ -1,30 +1,36 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback } from 'react'
-import api from '@/lib/api'
+import { useState, useEffect, useCallback } from "react";
+import api from "@/lib/axios.js";
 
 export function useInstallation(societeId) {
-  const [installation, setInstallation] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [installation, setInstallation] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchInstallation = useCallback(async () => {
-    if (!societeId) return
+    if (!societeId) return;
     try {
-      setLoading(true)
-      setError(null)
-      const response = await api.get(`/installations/societe/${societeId}`)
-      setInstallation(response.data)
+      setLoading(true);
+      setError(null);
+      const response = await api.get(`/installations/societe/${societeId}`);
+      setInstallation(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Erreur lors du chargement')
+      setError(err.response?.data?.message || "Erreur lors du chargement");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [societeId])
+  }, [societeId]);
 
   useEffect(() => {
-    fetchInstallation()
-  }, [fetchInstallation])
+    fetchInstallation();
+  }, [fetchInstallation]);
 
-  return { installation, setInstallation, loading, error, refetch: fetchInstallation }
+  return {
+    installation,
+    setInstallation,
+    loading,
+    error,
+    refetch: fetchInstallation,
+  };
 }

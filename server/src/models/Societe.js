@@ -1,10 +1,10 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const societeSchema = new mongoose.Schema(
   {
     nom: {
       type: String,
-      required: [true, 'Le nom de la société est requis'],
+      required: [true, "Le nom de la société est requis"],
       trim: true,
     },
     raisonSociale: {
@@ -42,8 +42,8 @@ const societeSchema = new mongoose.Schema(
     contact: {
       civilite: {
         type: String,
-        enum: ['', 'M.', 'Mme', 'Autre'],
-        default: '',
+        enum: ["", "M.", "Mme", "Autre"],
+        default: "",
       },
       prenom: { type: String, trim: true },
       nom: { type: String, trim: true },
@@ -56,8 +56,12 @@ const societeSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-)
+);
 
-societeSchema.index({ nom: 'text', raisonSociale: 'text', 'contact.nom': 'text' })
+societeSchema.index({
+  nom: "text",
+  raisonSociale: "text",
+  "contact.nom": "text",
+});
 
-export default mongoose.model('Societe', societeSchema)
+export default mongoose.model("Societe", societeSchema);

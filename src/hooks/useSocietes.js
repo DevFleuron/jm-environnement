@@ -1,59 +1,59 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback } from 'react'
-import api from '@/lib/api'
+import { useState, useEffect, useCallback } from "react";
+import api from "@/lib/axios.js";
 
-export function useSocietes(search = '') {
-  const [societes, setSocietes] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+export function useSocietes(search = "") {
+  const [societes, setSocietes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchSocietes = useCallback(async () => {
     try {
-      setLoading(true)
-      setError(null)
-      const params = search ? { search } : {}
-      const response = await api.get('/societes', { params })
-      setSocietes(response.data)
+      setLoading(true);
+      setError(null);
+      const params = search ? { search } : {};
+      const response = await api.get("/societes", { params });
+      setSocietes(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Erreur lors du chargement')
+      setError(err.response?.data?.message || "Erreur lors du chargement");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [search])
+  }, [search]);
 
   useEffect(() => {
-    fetchSocietes()
-  }, [fetchSocietes])
+    fetchSocietes();
+  }, [fetchSocietes]);
 
-  return { societes, loading, error, refetch: fetchSocietes }
+  return { societes, loading, error, refetch: fetchSocietes };
 }
 
 export function useSociete(id) {
-  const [societe, setSociete] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [societe, setSociete] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchSociete = useCallback(async () => {
     if (!id) {
-      setLoading(false)
-      return
+      setLoading(false);
+      return;
     }
     try {
-      setLoading(true)
-      setError(null)
-      const response = await api.get(`/societes/${id}`)
-      setSociete(response.data)
+      setLoading(true);
+      setError(null);
+      const response = await api.get(`/societes/${id}`);
+      setSociete(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Erreur lors du chargement')
+      setError(err.response?.data?.message || "Erreur lors du chargement");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [id])
+  }, [id]);
 
   useEffect(() => {
-    fetchSociete()
-  }, [fetchSociete])
+    fetchSociete();
+  }, [fetchSociete]);
 
-  return { societe, setSociete, loading, error, refetch: fetchSociete }
+  return { societe, setSociete, loading, error, refetch: fetchSociete };
 }
