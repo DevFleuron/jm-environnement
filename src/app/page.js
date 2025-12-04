@@ -34,7 +34,7 @@ export default function SocietesPage() {
             placeholder="Recherche par nom"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full focus:outline-none ring-0 pl-10 pr-4 py-2.5 border-none font-bold text-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+            className="w-full focus:outline-none ring-0 pl-10 pr-4 py-2.5 border-none font-bold text-xl outline-none"
           />
         </div>
         <button

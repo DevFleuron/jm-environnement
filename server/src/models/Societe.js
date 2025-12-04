@@ -19,11 +19,11 @@ const societeSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    NumeroSiret: {
+    numeroSiret: {
       type: String,
       trim: true,
     },
-    NumeroSiren: {
+    numeroSiren: {
       type: String,
       trim: true,
     },
