@@ -25,9 +25,9 @@ export default function SocietesPage() {
     setShowModal(false)
   }
   return (
-    <div className="space-y-6 px-10">
-      <div className="flex gap-4 border border-xs p-2">
-        <div className="flex-1 relative">
+    <div className="space-y-6 px-10 pt-5">
+      <div className="flex gap-4 border border-xs p-2 ">
+        <div className="flex-1 relative ">
           <IoSearch className="absolute top-1 w-8 h-8" color="#0c769e" />
           <input
             type="text"
