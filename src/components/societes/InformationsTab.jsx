@@ -13,7 +13,7 @@ export default function InformationsTab({ societe, onUpdate }) {
     formeJuridique: societe.formeJuridique || '',
     numeroSiret: societe.numeroSiret || '',
     numeroSiren: societe.numeroSiren || '',
-    adresse: societe.adresse || '',
+    adresseLigne1: societe.adresse || '',
     codePostal: societe.codePostal || '',
     ville: societe.ville || '',
     contact: {
@@ -54,30 +54,29 @@ export default function InformationsTab({ societe, onUpdate }) {
     }
   }
 
+  const groupClass = 'flex flex-col gap-1'
+  const labelClass = 'text-sm font-bold'
   const inputClass =
     'w-full px-3 bg-white py-2 rounded-xs focus:ring-3 focus:ring-[#0c769e] font-bold outline-none'
 
-  const labelClass = 'block whitespace-nowrap text-sm font-bold'
-  const inputLabel = 'flex items-center gap-5'
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-3 gap-10">
-        <div className={inputLabel}>
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-6xl mx-auto">
+      <div className="grid grid-cols-3 gap-8">
+        <div className={groupClass}>
           <label className={labelClass}>Civilité</label>
           <select
             name="contact.civilite"
             value={formData.contact.civilite}
             onChange={handleChange}
             className={inputClass}
-            placeholder="- -"
           >
             <option value="M.">M.</option>
             <option value="Mme">Mme</option>
             <option value="Autre">Autre</option>
           </select>
         </div>
-        <div className={inputLabel}>
+
+        <div className={groupClass}>
           <label className={labelClass}>Prénom</label>
           <input
             type="text"
@@ -88,21 +87,22 @@ export default function InformationsTab({ societe, onUpdate }) {
             className={inputClass}
           />
         </div>
-        <div className={inputLabel}>
+
+        <div className={groupClass}>
           <label className={labelClass}>Nom</label>
           <input
             type="text"
             name="contact.nom"
+            placeholder="Nom"
             value={formData.contact.nom}
             onChange={handleChange}
             className={inputClass}
-            placeholder="Nom"
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-5">
-        <div className="grid grid-cols gap-4">
-          <div className={inputLabel}>
+      <div className="grid grid-cols-2 gap-10 mt-4">
+        <div className="space-y-3">
+          <div className={groupClass}>
             <label className={labelClass}>Adresse</label>
             <input
               type="text"
@@ -113,35 +113,36 @@ export default function InformationsTab({ societe, onUpdate }) {
               className={inputClass}
             />
           </div>
-          <div>
-            <div className="flex gap-4">
-              <div className={inputLabel}>
-                <label className={labelClass}>Code postal</label>
-                <input
-                  type="text"
-                  name="codePostal"
-                  value={formData.codePostal}
-                  onChange={handleChange}
-                  placeholder="Code postal"
-                  className={`${inputClass} w-24`}
-                />
-              </div>
-              <div className={inputLabel}>
-                <label className={labelClass}>Ville</label>
-                <input
-                  type="text"
-                  name="ville"
-                  value={formData.ville}
-                  onChange={handleChange}
-                  placeholder="Ville"
-                  className={inputClass}
-                />
-              </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className={groupClass}>
+              <label className={labelClass}>Code postal</label>
+              <input
+                type="text"
+                name="codePostal"
+                value={formData.codePostal}
+                onChange={handleChange}
+                placeholder="Code postal"
+                className={inputClass}
+              />
+            </div>
+            <div className={groupClass}>
+              <label className={labelClass}>Ville</label>
+              <input
+                type="text"
+                name="ville"
+                value={formData.ville}
+                onChange={handleChange}
+                placeholder="Ville"
+                className={inputClass}
+              />
             </div>
           </div>
         </div>
-        <div className="grid grid-cols gap-4">
-          <div>
+
+        {/* Colonne droite : Téléphones / Email / Fonction */}
+        <div className="space-y-3">
+          <div className={groupClass}>
             <label className={labelClass}>Téléphone fixe</label>
             <input
               type="tel"
@@ -152,7 +153,8 @@ export default function InformationsTab({ societe, onUpdate }) {
               className={inputClass}
             />
           </div>
-          <div>
+
+          <div className={groupClass}>
             <label className={labelClass}>Téléphone portable</label>
             <input
               type="tel"
@@ -163,89 +165,93 @@ export default function InformationsTab({ societe, onUpdate }) {
               className={inputClass}
             />
           </div>
+
+          <div className={groupClass}>
+            <label className={labelClass}>Email</label>
+            <input
+              type="email"
+              name="contact.email"
+              placeholder="Email"
+              value={formData.contact.email}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
+
+          <div className={groupClass}>
+            <label className={labelClass}>Fonction</label>
+            <input
+              type="text"
+              name="contact.fonction"
+              placeholder="Fonction"
+              value={formData.contact.fonction}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="text"
-            name="raisonSociale"
-            placeholder="Raison sociale"
-            value={formData.raisonSociale}
-            onChange={handleChange}
-            className={inputClass}
-          />
+      <div className="grid grid-cols-2 gap-10 mt-4 items-center">
+        <div className="space-y-3">
+          <div className={groupClass}>
+            <label className={labelClass}>Raison sociale</label>
+            <input
+              type="text"
+              name="raisonSociale"
+              placeholder="Raison sociale"
+              value={formData.raisonSociale}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
+          <div className={groupClass}>
+            <label className={labelClass}>Secteur d'activité</label>
+            <input
+              type="text"
+              name="secteurActivite"
+              placeholder="Secteur d'activité"
+              value={formData.secteurActivite}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
+          <div className={groupClass}>
+            <label className={labelClass}>Forme juridique</label>
+            <input
+              type="text"
+              name="formeJuridique"
+              placeholder="Forme juridique"
+              value={formData.formeJuridique}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
         </div>
-        <div>
-          <input
-            type="email"
-            name="contact.email"
-            placeholder="Email"
-            value={formData.contact.email}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="text"
-            name="secteurActivite"
-            placeholder="Secteur d'activité"
-            value={formData.secteurActivite}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="contact.fonction"
-            value={formData.contact.fonction}
-            placeholder="Fonction"
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="text"
-            name="formeJuridique"
-            placeholder="Forme juridique"
-            value={formData.formeJuridique}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="numeroSiret"
-            placeholder="Numéro de siret"
-            value={formData.numeroSiret}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div></div>
-        <div>
-          <input
-            type="text"
-            name="numeroSiren"
-            placeholder="Numéro de siren"
-            value={formData.numeroSiren}
-            onChange={handleChange}
-            className={inputClass}
-          />
+        <div className="space-y-3">
+          <div>
+            <label className={labelClass}>Numéro de siret</label>
+            <input
+              type="text"
+              name="numeroSiret"
+              placeholder="Numéro de siret"
+              value={formData.numeroSiret}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Numéro siren</label>
+            <input
+              type="text"
+              name="numeroSiren"
+              placeholder="Numéro de siren"
+              value={formData.numeroSiren}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
         </div>
       </div>
 
