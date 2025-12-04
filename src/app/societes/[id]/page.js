@@ -1,72 +1,159 @@
-'use client'
+// app/societes/[id]/page.jsx
+"use client";
 
-import { useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
-import { useSociete } from '@/hooks/useSocietes'
-import InformationsTab from '@/components/societes/InformationsTab'
-import DocumentsTab from '@/components/societes/DocumentsTab'
-import InstallationTab from '@/components/societes/InstallationTab'
-import { HiBuildingOffice2 } from 'react-icons/hi2'
-import { IoPerson } from 'react-icons/io5'
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { useSociete } from "@/hooks/useSocietes";
+import { useAuth } from "@/components/AuthProvider";
+import api from "@/lib/axios.js";
+import InformationsTab from "@/components/societes/InformationsTab";
+import DocumentsTab from "@/components/societes/DocumentsTab";
+import InstallationTab from "@/components/societes/InstallationTab";
+import { HiBuildingOffice2 } from "react-icons/hi2";
+import { IoPerson } from "react-icons/io5";
+import { FiTrash2 } from "react-icons/fi";
 
 const TABS = [
-  { id: 'informations', label: 'Informations entreprise' },
-  { id: 'documents', label: 'Documents' },
-  { id: 'installation', label: 'Installation' },
-]
+  { id: "informations", label: "Informations entreprise" },
+  { id: "documents", label: "Documents" },
+  { id: "installation", label: "Installation" },
+];
 
 export default function SocieteDetailPage() {
-  const params = useParams()
-  const { societe, setSociete, loading, error } = useSociete(params.id)
-  const [activeTab, setActiveTab] = useState('informations')
+  const params = useParams();
+  const router = useRouter();
+  const { isAdmin } = useAuth();
+  const { societe, setSociete, loading, error } = useSociete(params.id);
+  const [activeTab, setActiveTab] = useState("informations");
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    const confirmMessage = ` ATTENTION !!
+
+Vous êtes sur le point de supprimer la société :
+"${societe.nom}"
+
+Cette action est IRRÉVERSIBLE et supprimera :
+- Toutes les informations de la société
+- Tous les documents associés
+- Toutes les installations associées
+
+Êtes-vous absolument sûr de vouloir continuer ?`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+      await api.delete(`/societes/${params.id}`);
+
+      // Redirection vers la liste avec message de succès
+      router.push("/?deleted=true");
+    } catch (error) {
+      alert(error.response?.data?.message || "Erreur lors de la suppression");
+      setDeleting(false);
+    }
+  }
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-gray-500">Chargement...</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00a3c4]"></div>
       </div>
-    )
+    );
   }
 
   if (error || !societe) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 gap-4">
-        <div className="text-gray-500">{error || 'Société non trouvée'}</div>
-        <Link href="/" className="text-sky-500 hover:text-sky-600">
-          Retour à la liste
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <div className="text-xl text-gray-500">
+          {error || "Société non trouvée"}
+        </div>
+        <Link
+          href="/societes"
+          className="px-4 py-2 bg-[#0c769e] text-white rounded-lg hover:bg-[#095a7a] transition-colors"
+        >
+          ← Retour à la liste
         </Link>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6 p-10">
-      <Link href="/" className="text-sky-500 hover:text-sky-600 text-sm">
-        ← Retour à la liste
-      </Link>
+      {/* Header avec navigation et bouton suppression */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/"
+          className="text-[#0c769e] hover:text-[#095a7a] font-medium text-sm flex items-center gap-2"
+        >
+          <span>←</span> Retour à la liste
+        </Link>
 
-      <div className="flex rounded-xs border-3 border-[#0c769e] items-center justify-between p-4">
-        <div className="flex items-center gap-3">
-          <HiBuildingOffice2 className="w-9 h-9" color="#0c769e" />
-          <span className="font-bold text-lg">{societe.nom}</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <IoPerson className="w-9 h-9" color="#0c769e" />
-          <span className="text-gray-700">
-            {societe.contact?.prenom} {societe.contact?.nom}
-          </span>
-        </div>
+        {/* Bouton suppression (admin only) */}
+        {isAdmin && (
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+          >
+            {deleting ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <span>Suppression...</span>
+              </>
+            ) : (
+              <>
+                <FiTrash2 className="w-4 h-4" />
+                <span>Supprimer la société</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
 
-      <div className="bg-white overflow-hidden">
-        <div className="flex">
+      {/* Carte info société */}
+      <div className="flex rounded-lg border-2 border-[#0c769e] items-center justify-between p-4 bg-white shadow-sm">
+        <div className="flex items-center gap-3">
+          <HiBuildingOffice2 className="w-9 h-9" color="#0c769e" />
+          <div>
+            <h1 className="font-bold text-xl text-gray-900">{societe.nom}</h1>
+            {societe.ville && (
+              <p className="text-sm text-gray-500">{societe.ville}</p>
+            )}
+          </div>
+        </div>
+
+        {(societe.contact?.prenom || societe.contact?.nom) && (
+          <div className="flex items-center gap-3">
+            <IoPerson className="w-9 h-9" color="#0c769e" />
+            <div className="text-right">
+              <p className="text-gray-700 font-medium">
+                {societe.contact?.prenom} {societe.contact?.nom}
+              </p>
+              {societe.contact?.fonction && (
+                <p className="text-sm text-gray-500">
+                  {societe.contact.fonction}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Onglets */}
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="flex border-b border-gray-200">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-3 text-sm font-bold rounded-tr-3xl rounded-tl-3xl cursor-pointer transition-colors ${
-                activeTab === tab.id ? 'bg-[#0c769e] text-white' : 'text-gray-600 hover:bg-gray-50'
+              className={`px-6 py-3 text-sm font-bold transition-colors relative ${
+                activeTab === tab.id
+                  ? "text-[#0c769e] border-b-2 border-[#0c769e]"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               {tab.label}
@@ -74,14 +161,16 @@ export default function SocieteDetailPage() {
           ))}
         </div>
 
-        <div className="p-6 bg-[#00a3c4]">
-          {activeTab === 'informations' && (
+        <div className="p-6">
+          {activeTab === "informations" && (
             <InformationsTab societe={societe} onUpdate={setSociete} />
           )}
-          {activeTab === 'documents' && <DocumentsTab societeId={params.id} />}
-          {activeTab === 'installation' && <InstallationTab societeId={params.id} />}
+          {activeTab === "documents" && <DocumentsTab societeId={params.id} />}
+          {activeTab === "installation" && (
+            <InstallationTab societeId={params.id} />
+          )}
         </div>
       </div>
     </div>
-  )
+  );
 }
