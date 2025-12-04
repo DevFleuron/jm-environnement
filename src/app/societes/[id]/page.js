@@ -1,4 +1,3 @@
-// app/societes/[id]/page.jsx
 'use client'
 
 import { useState } from 'react'
@@ -7,6 +6,8 @@ import Link from 'next/link'
 import { useSociete } from '@/hooks/useSocietes'
 import { useAuth } from '@/components/AuthProvider'
 import api from '@/lib/axios.js'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import Toast from '@/components/ui/Toast'
 import InformationsTab from '@/components/societes/InformationsTab'
 import DocumentsTab from '@/components/societes/DocumentsTab'
 import InstallationTab from '@/components/societes/InstallationTab'
@@ -27,33 +28,33 @@ export default function SocieteDetailPage() {
   const { societe, setSociete, loading, error } = useSociete(params.id)
   const [activeTab, setActiveTab] = useState('informations')
   const [deleting, setDeleting] = useState(false)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [toast, setToast] = useState(null)
 
-  async function handleDelete() {
-    const confirmMessage = ` ATTENTION !!
-
-Vous êtes sur le point de supprimer la société :
-"${societe.nom}"
-
-Cette action est IRRÉVERSIBLE et supprimera :
-- Toutes les informations de la société
-- Tous les documents associés
-- Toutes les installations associées
-
-Êtes-vous absolument sûr de vouloir continuer ?`
-
-    if (!confirm(confirmMessage)) {
-      return
-    }
-
+  async function handleDeleteConfirm() {
     try {
       setDeleting(true)
       await api.delete(`/societes/${params.id}`)
 
-      // Redirection vers la liste avec message de succès
-      router.push('/?deleted=true')
+      // Fermer le dialog
+      setShowConfirmDialog(false)
+
+      // Afficher le toast de succès
+      setToast({
+        type: 'success',
+        message: `La société "${societe.nom}" a été supprimée avec succès`,
+      })
+
+      // Rediriger après 1 seconde
+      setTimeout(() => {
+        router.push('/')
+      }, 1000)
     } catch (error) {
-      alert(error.response?.data?.message || 'Erreur lors de la suppression')
       setDeleting(false)
+      setToast({
+        type: 'error',
+        message: error.response?.data?.message || 'Erreur lors de la suppression',
+      })
     }
   }
 
@@ -70,7 +71,7 @@ Cette action est IRRÉVERSIBLE et supprimera :
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <div className="text-xl text-gray-500">{error || 'Société non trouvée'}</div>
         <Link
-          href="/societes"
+          href="/"
           className="px-4 py-2 bg-[#0c769e] text-white rounded-lg hover:bg-[#095a7a] transition-colors"
         >
           ← Retour à la liste
@@ -81,7 +82,23 @@ Cette action est IRRÉVERSIBLE et supprimera :
 
   return (
     <div className="space-y-6 p-10">
-      {/* Header avec navigation et bouton suppression */}
+      {/* Toast notification */}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+
+      {/* Dialog de confirmation */}
+      <ConfirmDialog
+        isOpen={showConfirmDialog}
+        onClose={() => setShowConfirmDialog(false)}
+        onConfirm={handleDeleteConfirm}
+        loading={deleting}
+        variant="danger"
+        title="Supprimer la société ?"
+        message={`Vous êtes sur le point de supprimer "${societe.nom}".\n\nCette action est irréversible et supprimera :\n• Toutes les informations de la société\n• Tous les documents associés\n• Toutes les installations associées\n\nÊtes-vous sûr de vouloir continuer ?`}
+        confirmText="Oui, supprimer"
+        cancelText="Annuler"
+      />
+
+      {/* Header */}
       <div className="flex items-center justify-between">
         <Link
           href="/"
@@ -90,24 +107,13 @@ Cette action est IRRÉVERSIBLE et supprimera :
           <span>←</span> Retour à la liste
         </Link>
 
-        {/* Bouton suppression (admin only) */}
         {isAdmin && (
           <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            onClick={() => setShowConfirmDialog(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600 transition-colors font-medium cursor-pointer"
           >
-            {deleting ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                <span>Suppression...</span>
-              </>
-            ) : (
-              <>
-                <FiTrash2 className="w-4 h-4" />
-                <span>Supprimer la société</span>
-              </>
-            )}
+            <FiTrash2 className="w-4 h-4" />
+            <span>Supprimer la société</span>
           </button>
         )}
       </div>
