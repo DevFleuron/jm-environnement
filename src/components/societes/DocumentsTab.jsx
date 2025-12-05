@@ -136,7 +136,7 @@ export default function DocumentsTab({ societeId }) {
 
   return (
     <>
-      <div className="space-y-4 grid grid-cols-2">
+      <div className="space-y-4 grid grid-cols items-center md:grid-cols-2">
         <div className="overflow-hidden">
           <div className="px-4 py-2">
             <label className="flex items-center gap-2">
@@ -214,7 +214,7 @@ export default function DocumentsTab({ societeId }) {
           )}
         </div>
 
-        <div className="w-fit ml-auto flex flex-col justify-items-end space-y-8 ">
+        <div className="max-w-full md:ml-auto flex justify-center items-center flex-col md:justify-items-end space-y-8 ">
           <input
             type="file"
             ref={fileInputRef}
@@ -225,7 +225,7 @@ export default function DocumentsTab({ societeId }) {
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="flex items-center text-base font-bold gap-2 px-4 py-2 bg-[#0c769e] text-white rounded-2xl cursor-pointer hover:bg-white hover:text-[#0c769e] transition-all duration-180 disabled:opacity-50"
+            className="flex items-center text-base font-bold gap-2 px-8 py-2.5 bg-[#0c769e] text-white rounded-2xl cursor-pointer hover:bg-white hover:text-[#0c769e] transition-all duration-180 disabled:opacity-50"
           >
             <PiUploadSimpleBold className="w-6 h-6" />
             {uploading ? 'Import...' : 'Importer'}

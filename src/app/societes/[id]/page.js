@@ -145,15 +145,15 @@ export default function SocieteDetailPage() {
 
       {/* Onglets */}
       <div className="overflow-hidden">
-        <div className="flex ">
+        <div className="w-full flex md:justify-start ">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 text-sm font-bold transition-colors relative ${
                 activeTab === tab.id
-                  ? 'text-white bg-[#0c769e]'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'text-black bg-[#c0e4f0] rounded-t-lg'
+                  : 'text-gray-600 hover:text-gray-900 rounded-t-lg hover:bg-gray-50'
               }`}
             >
               {tab.label}

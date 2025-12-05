@@ -88,7 +88,7 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] mx-7 overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4">
           <h2 className="text-lg font-semibold">Ajouter une société</h2>
           <button
@@ -103,30 +103,26 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
           <div className="space-y-4">
             <h3 className="font-bold text-gray-900">Informations entreprise</h3>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <input
-                  type="text"
-                  name="nom"
-                  placeholder="Nom de la société*"
-                  value={formData.nom}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  name="raisonSociale"
-                  placeholder="Raison sociale*"
-                  value={formData.raisonSociale}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
-              </div>
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                name="nom"
+                placeholder="Nom de la société*"
+                value={formData.nom}
+                onChange={handleChange}
+                className={inputClass}
+              />
+              <input
+                type="text"
+                name="raisonSociale"
+                placeholder="Raison sociale*"
+                value={formData.raisonSociale}
+                onChange={handleChange}
+                className={inputClass}
+              />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="text"
@@ -149,7 +145,7 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="text"
@@ -183,7 +179,7 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="text"
@@ -208,8 +204,8 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-medium text-gray-900">Contact principal</h3>
-            <div className="grid grid-cols-3 gap-4">
+            <h3 className="font-semibold text-gray-900">Contact principal</h3>
+            <div className="grid grid-cols md:grid-cols-3 gap-4">
               <div>
                 <select
                   name="contact.civilite"
@@ -245,7 +241,7 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="tel"
@@ -268,7 +264,7 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="email"

@@ -61,7 +61,7 @@ export default function InformationsTab({ societe, onUpdate }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-6xl mx-auto">
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid grid-cols md:grid-cols-3 gap-8">
         <div className={groupClass}>
           <label className={labelClass}>Civilité</label>
           <select
@@ -100,7 +100,7 @@ export default function InformationsTab({ societe, onUpdate }) {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-10 mt-4">
+      <div className="grid grid-cols md:grid-cols-2 gap-10 mt-4">
         <div className="space-y-3">
           <div className={groupClass}>
             <label className={labelClass}>Adresse</label>
@@ -114,7 +114,7 @@ export default function InformationsTab({ societe, onUpdate }) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols md:grid-cols-2 gap-4">
             <div className={groupClass}>
               <label className={labelClass}>Code postal</label>
               <input
@@ -192,7 +192,7 @@ export default function InformationsTab({ societe, onUpdate }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-10 mt-4 items-center">
+      <div className="grid grid-cols md:grid-cols-2 gap-10 mt-4 items-center">
         <div className="space-y-3">
           <div className={groupClass}>
             <label className={labelClass}>Raison sociale</label>

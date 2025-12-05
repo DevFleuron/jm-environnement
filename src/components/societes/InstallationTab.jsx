@@ -66,13 +66,13 @@ export default function InstallationTab({ societeId }) {
   }
 
   const inputClass =
-    'w-[480px] px-3 py-2 rounded-xs focus:ring-3 focus:ring-[#0c769e] bg-white font-bold outline-none'
+    'max-w-[480px] md:w-[480px] px-3 py-2 rounded-xs focus:ring-3 focus:ring-[#0c769e] bg-white font-bold outline-none'
 
   const labelClass = 'block w-48 whitespace-nowrap text-sm font-bold'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="flex items-center gap-5">
+      <div className="grid grid-cols gap-2 md:flex md:items-center md:gap-5">
         <label className={labelClass}>Nom de l'auditeur</label>
         <input
           type="text"
@@ -84,7 +84,7 @@ export default function InstallationTab({ societeId }) {
         />
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="grid grid-cols gap-2 md:flex md:items-center md:gap-5">
         <label className={labelClass}>Date de l'audite</label>
         <input
           type="date"
@@ -94,7 +94,7 @@ export default function InstallationTab({ societeId }) {
           className={inputClass}
         />
       </div>
-      <div className="flex items-center gap-5">
+      <div className="grid grid-cols gap-2 md:flex md:items-center md:gap-5">
         <label className={labelClass}>Nom de l'installateur</label>
         <input
           type="text"
@@ -105,7 +105,7 @@ export default function InstallationTab({ societeId }) {
           className={inputClass}
         />
       </div>
-      <div className="flex items-center gap-5">
+      <div className="grid grid-cols gap-2 md:flex md:items-center md:gap-5">
         <label className={labelClass}>Type de produit</label>
         <input
           type="text"
@@ -116,7 +116,7 @@ export default function InstallationTab({ societeId }) {
           className={inputClass}
         />
       </div>
-      <div className="flex items-center gap-5">
+      <div className="grid grid-cols gap-2 md:flex md:items-center md:gap-5">
         <label className={labelClass}>Nombre de produit installé</label>
         <select
           name="nombreProduitInstalle"
@@ -132,7 +132,7 @@ export default function InstallationTab({ societeId }) {
         </select>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="grid grid-cols gap-2 md:flex md:items-center md:gap-5">
         <label className={labelClass}>Date de l'installation</label>
         <input
           type="date"
@@ -143,7 +143,7 @@ export default function InstallationTab({ societeId }) {
         />
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="grid grid-cols gap-2 md:flex md:items-center md:gap-5">
         <label className={labelClass}>Date de fin de pose</label>
         <input
           type="date"
@@ -154,7 +154,7 @@ export default function InstallationTab({ societeId }) {
         />
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="grid grid-cols gap-2 md:flex md:items-center md:gap-5">
         <label className={labelClass}>Audite accepté ?</label>
         <div className="flex items-center gap-4">
           <label className="flex items-center gap-2">
