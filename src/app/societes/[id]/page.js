@@ -144,15 +144,15 @@ export default function SocieteDetailPage() {
       </div>
 
       {/* Onglets */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="flex border-b border-gray-200">
+      <div className="overflow-hidden">
+        <div className="flex ">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 text-sm font-bold transition-colors relative ${
                 activeTab === tab.id
-                  ? 'text-[#0c769e] border-b-2 border-[#0c769e]'
+                  ? 'text-white bg-[#0c769e]'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >

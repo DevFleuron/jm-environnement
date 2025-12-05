@@ -1,31 +1,31 @@
 // components/Navbar.jsx
-"use client";
+'use client'
 
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useAuth } from "@/components/AuthProvider";
-import { FiLogOut, FiUsers } from "react-icons/fi";
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useAuth } from '@/components/AuthProvider'
+import { FiLogOut, FiUsers } from 'react-icons/fi'
 
 export default function Navbar() {
-  const { user, logout, isAdmin } = useAuth();
-  const pathname = usePathname();
+  const { user, logout, isAdmin } = useAuth()
+  const pathname = usePathname()
 
   // Ne pas afficher la navbar sur la page de login
-  if (pathname === "/login") return null;
+  if (pathname === '/login') return null
 
   const navLinks = [
-    { href: "/societes", label: "Sociétés" },
-    { href: "/documents", label: "Documents" },
-    { href: "/installations", label: "Installations" },
-  ];
+    { href: '/societes', label: 'Sociétés' },
+    { href: '/documents', label: 'Documents' },
+    { href: '/installations', label: 'Installations' },
+  ]
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 py-10">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/" className="shrink-0">
             <Image
               src="/logo-jm-environnement.webp"
               alt="JM-Environnement"
@@ -71,5 +71,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  );
+  )
 }

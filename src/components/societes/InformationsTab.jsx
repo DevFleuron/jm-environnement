@@ -13,7 +13,7 @@ export default function InformationsTab({ societe, onUpdate }) {
     formeJuridique: societe.formeJuridique || '',
     numeroSiret: societe.numeroSiret || '',
     numeroSiren: societe.numeroSiren || '',
-    adresseLigne1: societe.adresse || '',
+    adresse: societe.adresse || '',
     codePostal: societe.codePostal || '',
     ville: societe.ville || '',
     contact: {
