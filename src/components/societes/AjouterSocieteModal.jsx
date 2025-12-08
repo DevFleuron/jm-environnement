@@ -28,8 +28,10 @@ const initialFormData = {
 export default function AjouterSocieteModal({ onClose, onCreated }) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState(initialFormData)
+  const [errors, setErrors] = useState([])
 
   function handleChange(e) {
+    setErrors([])
     const { name, value } = e.target
     if (name.startsWith('contact.')) {
       const field = name.split('.')[1]
@@ -42,22 +44,32 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
     }
   }
 
+  const sirenRegex = /^\d{3}\s?\d{3}\s?\d{3}$/
+  const siretRegex = /^\d{3}\s?\d{3}\s?\d{3}\s?\d{5}$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
   async function handleSubmit(e) {
     e.preventDefault()
-    const erreurs = []
+    const newErrors = []
 
-    if (!formData.nom.trim()) erreurs.push('Le nom de la société est obligatoire')
-    if (!formData.ville.trim()) erreurs.push('La ville est obligatoire')
-    if (!formData.codePostal.trim()) erreurs.push('Le code postal est obligatoire')
+    if (!formData.nom.trim()) newErrors.push('Le nom de la société est obligatoire')
+    if (!formData.ville.trim()) newErrors.push('La ville est obligatoire')
+    if (!formData.codePostal.trim()) newErrors.push('Le code postal est obligatoire')
+    if (!sirenRegex.test((formData.numeroSiren || '').trim()))
+      newErrors.push('Numéro de SIREN invalide ou manquant')
+    if (!siretRegex.test((formData.numeroSiret || '').trim()))
+      newErrors.push('Numéro de SIRET invalide ou manquant')
+    if (!emailRegex.test((formData.contact.email || '').trim()))
+      newErrors.push('Email invalide ou manquant')
 
     // Champs contact obligatoires
-    if (!formData.contact.prenom.trim()) erreurs.push('Le prénom du contact est obligatoire')
-    if (!formData.contact.nom.trim()) erreurs.push('Le nom du contact est obligatoire')
-    if (!formData.contact.email.trim()) erreurs.push('L’email du contact est obligatoire')
+    if (!formData.contact.prenom.trim()) newErrors.push('Le prénom du contact est obligatoire')
+    if (!formData.contact.nom.trim()) newErrors.push('Le nom du contact est obligatoire')
+    if (!formData.contact.email.trim()) newErrors.push('L’email du contact est obligatoire')
 
-    // 2️⃣ Si erreurs → on bloque l’envoi
-    if (erreurs.length > 0) {
-      alert('Merci de compléter les champs obligatoires :\n- ' + erreurs.join('\n- '))
+    // 2️⃣ Si newErrors → on bloque l’envoi
+    if (newErrors.length > 0) {
+      setErrors(newErrors)
       return
     }
 
@@ -72,9 +84,11 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
     }
   }
 
+  const inputClass = 'w-full px-3 py-2 border rounded-lg outline-none focus:outline-none'
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] mx-7 overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4">
           <h2 className="text-lg font-semibold">Ajouter une société</h2>
           <button
@@ -89,31 +103,26 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
           <div className="space-y-4">
             <h3 className="font-bold text-gray-900">Informations entreprise</h3>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <input
-                  type="text"
-                  name="nom"
-                  placeholder="Nom de la société"
-                  value={formData.nom}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  name="raisonSociale"
-                  placeholder="Raison sociale"
-                  value={formData.raisonSociale}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
-                />
-              </div>
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                name="nom"
+                placeholder="Nom de la société*"
+                value={formData.nom}
+                onChange={handleChange}
+                className={inputClass}
+              />
+              <input
+                type="text"
+                name="raisonSociale"
+                placeholder="Raison sociale*"
+                value={formData.raisonSociale}
+                onChange={handleChange}
+                className={inputClass}
+              />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="text"
@@ -121,7 +130,7 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
                   name="secteurActivite"
                   value={formData.secteurActivite}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
               <div>
@@ -131,30 +140,30 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
                   placeholder="Forme juridique"
                   value={formData.formeJuridique}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="text"
                   name="numeroSiret"
-                  placeholder="Numéro de SIRET"
+                  placeholder="Numéro de SIRET*"
                   value={formData.numeroSiret}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus: focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
               <div>
                 <input
                   type="text"
                   name="numeroSiren"
-                  placeholder="Numéro de SIREN"
+                  placeholder="Numéro de SIREN*"
                   value={formData.numeroSiren}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
             </div>
@@ -163,46 +172,46 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
               <input
                 type="text"
                 name="adresse"
-                placeholder="Adresse"
+                placeholder="Adresse*"
                 value={formData.adresse}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                className={inputClass}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="text"
                   name="codePostal"
-                  placeholder="Code postal"
+                  placeholder="Code postal*"
                   value={formData.codePostal}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
               <div>
                 <input
                   type="text"
                   name="ville"
-                  placeholder="Ville"
+                  placeholder="Ville*"
                   value={formData.ville}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-medium text-gray-900">Contact principal</h3>
-            <div className="grid grid-cols-3 gap-4">
+            <h3 className="font-semibold text-gray-900">Contact principal</h3>
+            <div className="grid grid-cols md:grid-cols-3 gap-4">
               <div>
                 <select
                   name="contact.civilite"
                   value={formData.contact.civilite}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 >
                   <option value="">Civilité</option>
                   <option value="M.">M.</option>
@@ -214,48 +223,48 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
                 <input
                   type="text"
                   name="contact.prenom"
-                  placeholder="Prénom"
+                  placeholder="Prénom*"
                   value={formData.contact.prenom}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
               <div>
                 <input
                   type="text"
                   name="contact.nom"
-                  placeholder="Nom"
+                  placeholder="Nom*"
                   value={formData.contact.nom}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="tel"
                   name="contact.telephone"
-                  placeholder="Téléphone"
+                  placeholder="Téléphone Fixe"
                   value={formData.contact.telephone}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
               <div>
                 <input
                   type="tel"
                   name="contact.mobile"
-                  placeholder="Mobile"
+                  placeholder="Téléphone Mobile"
                   value={formData.contact.mobile}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols md:grid-cols-2 gap-4">
               <div>
                 <input
                   type="email"
@@ -263,7 +272,7 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
                   placeholder="Email"
                   value={formData.contact.email}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
               <div>
@@ -273,11 +282,22 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
                   placeholder="Fonction"
                   value={formData.contact.fonction}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
+                  className={inputClass}
                 />
               </div>
             </div>
           </div>
+
+          {errors.length > 0 && (
+            <div className="bg-red-50 border border-red-300 text-red-700 p-3 rounded-lg mb-4">
+              <p className="font-bold">Champs manquants</p>
+              <ul className="list-disc list-inside text-sm">
+                {errors.map((err, index) => (
+                  <li key={index}>{err}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="flex justify-end gap-3 pt-4">
             <button

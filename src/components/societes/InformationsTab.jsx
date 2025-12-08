@@ -61,6 +61,8 @@ export default function InformationsTab({ societe, onUpdate }) {
     }
   }
 
+  const groupClass = "flex flex-col gap-1";
+  const labelClass = "text-sm font-bold";
   const inputClass =
     "w-full px-3 bg-white py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0c769e] focus:border-transparent";
 
