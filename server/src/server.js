@@ -16,7 +16,12 @@ const app = express();
 // Connexion MongoDB
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3006", "http://192.168.1.128:3006"],
+    credentials: true,
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json());
 
@@ -51,6 +56,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(` Serveur backend lancé !`);
+  console.log(`    PC:      http://localhost:${PORT}`);
 });

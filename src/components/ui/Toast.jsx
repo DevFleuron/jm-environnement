@@ -59,7 +59,7 @@ export default function Toast({
         className={`${config.bg} ${config.border} border rounded-lg shadow-lg p-4`}
       >
         <div className="flex items-start gap-3">
-          <div className={`${config.iconBg} p-2 rounded-lg flex-shrink-0`}>
+          <div className={`${config.iconBg} p-2 rounded-lg shrink-0`}>
             <Icon className={`w-5 h-5 ${config.iconColor}`} />
           </div>
           <div className="flex-1">

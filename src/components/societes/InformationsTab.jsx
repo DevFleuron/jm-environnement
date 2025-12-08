@@ -1,253 +1,318 @@
-'use client'
+// components/societes/InformationsTab.jsx
+"use client";
 
-import { useState } from 'react'
-import { updateSociete } from '@/features/societes/api/societesApi'
-import { FiSave } from 'react-icons/fi'
+import { useState } from "react";
+import { updateSociete } from "@/features/societes/api/societesApi";
+import Toast from "@/components/ui/Toast";
+import { FiSave } from "react-icons/fi";
 
 export default function InformationsTab({ societe, onUpdate }) {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null);
   const [formData, setFormData] = useState({
-    nom: societe.nom || '',
-    raisonSociale: societe.raisonSociale || '',
-    secteurActivite: societe.secteurActivite || '',
-    formeJuridique: societe.formeJuridique || '',
-    numeroSiret: societe.numeroSiret || '',
-    numeroSiren: societe.numeroSiren || '',
-    adresse: societe.adresse || '',
-    codePostal: societe.codePostal || '',
-    ville: societe.ville || '',
+    nom: societe.nom || "",
+    raisonSociale: societe.raisonSociale || "",
+    secteurActivite: societe.secteurActivite || "",
+    formeJuridique: societe.formeJuridique || "",
+    numeroSiret: societe.numeroSiret || "",
+    numeroSiren: societe.numeroSiren || "",
+    adresse: societe.adresse || "",
+    codePostal: societe.codePostal || "",
+    ville: societe.ville || "",
     contact: {
-      civilite: societe.contact?.civilite || '',
-      prenom: societe.contact?.prenom || '',
-      nom: societe.contact?.nom || '',
-      telephone: societe.contact?.telephone || '',
-      mobile: societe.contact?.mobile || '',
-      email: societe.contact?.email || '',
-      fonction: societe.contact?.fonction || '',
+      civilite: societe.contact?.civilite || "",
+      prenom: societe.contact?.prenom || "",
+      nom: societe.contact?.nom || "",
+      telephone: societe.contact?.telephone || "",
+      mobile: societe.contact?.mobile || "",
+      email: societe.contact?.email || "",
+      fonction: societe.contact?.fonction || "",
     },
-  })
+  });
 
   function handleChange(e) {
-    const { name, value } = e.target
-    if (name.startsWith('contact.')) {
-      const field = name.split('.')[1]
+    const { name, value } = e.target;
+    if (name.startsWith("contact.")) {
+      const field = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
         contact: { ...prev.contact, [field]: value },
-      }))
+      }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }))
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   }
 
   async function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      setLoading(true)
-      const updated = await updateSociete(societe._id, formData)
-      onUpdate(updated)
-      alert('Société mise à jour avec succès')
+      setLoading(true);
+      const updated = await updateSociete(societe._id, formData);
+      onUpdate(updated);
+      setToast({ type: "success", message: "Société mise à jour avec succès" });
     } catch (error) {
-      alert(error.response?.data?.message || 'Erreur lors de la mise à jour')
+      setToast({
+        type: "error",
+        message:
+          error.response?.data?.message || "Erreur lors de la mise à jour",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   const inputClass =
-    'w-full px-3 bg-white py-2 rounded-xs focus:ring-3 focus:ring-[#0c769e] font-bold outline-none'
+    "w-full px-3 bg-white py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0c769e] focus:border-transparent";
 
-  const labelClass = 'block w-48 whitespace-nowrap text-sm font-bold'
+  const labelClass = "text-sm font-semibold text-gray-800";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-3 gap-4">
-        <label className={labelClass}>Nom de l'auditeur</label>
-        <div>
-          <select
-            name="contact.civilite"
-            value={formData.contact.civilite}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            <option value="">Civilité</option>
-            <option value="M.">M.</option>
-            <option value="Mme">Mme</option>
-            <option value="Autre">Autre</option>
-          </select>
-        </div>
-        <div>
-          <input
-            type="text"
-            name="contact.prenom"
-            placeholder="Prénom"
-            value={formData.contact.prenom}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="contact.nom"
-            value={formData.contact.nom}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="Nom"
-          />
-        </div>
-      </div>
+    <>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="text"
-            name="adresse"
-            placeholder="Adresse"
-            value={formData.adresse}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              name="codePostal"
-              value={formData.codePostal}
-              onChange={handleChange}
-              placeholder="Code postal"
-              className={`${inputClass} w-24`}
-            />
-            <input
-              type="text"
-              name="ville"
-              value={formData.ville}
-              onChange={handleChange}
-              placeholder="Ville"
-              className={inputClass}
-            />
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-[#00a3c4]/15 rounded-lg p-4 md:p-6"
+      >
+        {/* Section Contact */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* 🟦 Colonne gauche : Contact principal */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-gray-900 text-lg md:hidden">
+              Contact principal
+            </h3>
+
+            {/* Civilité */}
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Civilité</label>
+              <select
+                name="contact.civilite"
+                value={formData.contact.civilite}
+                onChange={handleChange}
+                className={inputClass}
+              >
+                <option value="">--</option>
+                <option value="M.">M.</option>
+                <option value="Mme">Mme</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+
+            {/* Prénom */}
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Prénom</label>
+              <input
+                type="text"
+                name="contact.prenom"
+                value={formData.contact.prenom}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+
+            {/* Nom */}
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Nom</label>
+              <input
+                type="text"
+                name="contact.nom"
+                value={formData.contact.nom}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          {/* 🟩 Colonne droite : Adresse */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-gray-900 text-lg md:hidden">
+              Adresse
+            </h3>
+
+            {/* Adresse */}
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Adresse</label>
+              <input
+                type="text"
+                name="adresse"
+                value={formData.adresse}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+
+            {/* Complément 1 */}
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={`${labelClass} md:invisible`}>Adresse</label>
+              <input
+                type="text"
+                className={inputClass}
+                placeholder="Complément d'adresse (optionnel)"
+              />
+            </div>
+
+            {/* CP / Ville */}
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>CP / Ville</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  name="codePostal"
+                  value={formData.codePostal}
+                  onChange={handleChange}
+                  className={`${inputClass} w-24`}
+                  placeholder="CP"
+                />
+                <input
+                  type="text"
+                  name="ville"
+                  value={formData.ville}
+                  onChange={handleChange}
+                  className={inputClass}
+                  placeholder="Ville"
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="tel"
-            name="contact.telephone"
-            placeholder="Téléphone fixe"
-            value={formData.contact.telephone}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <input
-            type="tel"
-            name="contact.mobile"
-            placeholder="Téléphone portable"
-            value={formData.contact.mobile}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
+        {/* Séparateur */}
+        <div className="border-t border-gray-200 my-6"></div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="text"
-            name="raisonSociale"
-            placeholder="Raison sociale"
-            value={formData.raisonSociale}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <input
-            type="email"
-            name="contact.email"
-            placeholder="Email"
-            value={formData.contact.email}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
+        {/* Mobile : Stack vertical | Desktop : Deux colonnes */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Colonne gauche : Informations entreprise */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-gray-900 text-lg">
+              Informations entreprise
+            </h3>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="text"
-            name="secteurActivite"
-            placeholder="Secteur d'activité"
-            value={formData.secteurActivite}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="contact.fonction"
-            value={formData.contact.fonction}
-            placeholder="Fonction"
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Raison sociale</label>
+              <input
+                type="text"
+                name="raisonSociale"
+                value={formData.raisonSociale}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <input
-            type="text"
-            name="formeJuridique"
-            placeholder="Forme juridique"
-            value={formData.formeJuridique}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="numeroSiret"
-            placeholder="Numéro de siret"
-            value={formData.numeroSiret}
-            onChange={handleChange}
-            className={inputClass}
-          />
-        </div>
-      </div>
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Secteur d'activité</label>
+              <input
+                type="text"
+                name="secteurActivite"
+                value={formData.secteurActivite}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div></div>
-        <div>
-          <input
-            type="text"
-            name="numeroSiren"
-            placeholder="Numéro de siren"
-            value={formData.numeroSiren}
-            onChange={handleChange}
-            className={inputClass}
-          />
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Forme juridique</label>
+              <input
+                type="text"
+                name="formeJuridique"
+                value={formData.formeJuridique}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Numéro de siret</label>
+              <input
+                type="text"
+                name="numeroSiret"
+                value={formData.numeroSiret}
+                onChange={handleChange}
+                className={inputClass}
+                maxLength={14}
+              />
+            </div>
+
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Numéro de siren</label>
+              <input
+                type="text"
+                name="numeroSiren"
+                value={formData.numeroSiren}
+                onChange={handleChange}
+                className={inputClass}
+                maxLength={9}
+              />
+            </div>
+          </div>
+
+          {/* Colonne droite : Contact et numéros */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-gray-900 text-lg">Coordonnées</h3>
+
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Téléphone</label>
+              <input
+                type="tel"
+                name="contact.telephone"
+                value={formData.contact.telephone}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Mobile</label>
+              <input
+                type="tel"
+                name="contact.mobile"
+                value={formData.contact.mobile}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Email</label>
+              <input
+                type="email"
+                name="contact.email"
+                value={formData.contact.email}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col md:grid md:grid-cols-[150px_1fr] gap-2 md:gap-4 md:items-center">
+              <label className={labelClass}>Fonction</label>
+              <input
+                type="text"
+                name="contact.fonction"
+                value={formData.contact.fonction}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className="flex justify-center pt-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-8 py-3 bg-[#0c769e] font-bold text-white rounded-xl hover:bg-white hover:text-[#0c769e] transition-all duration-300 disabled:opacity-50 cursor-pointer flex items-center gap-2"
-        >
-          <FiSave className="w-6 h-6" />
-
-          {loading ? 'Enregistrement...' : 'Enregistrer'}
-        </button>
-      </div>
-    </form>
-  )
+        {/* Bouton Enregistrer */}
+        <div className="flex justify-center pt-6">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full md:w-auto px-8 py-3 bg-[#0c769e] font-bold text-white rounded-xl hover:bg-[#095a7a] transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 shadow-lg"
+          >
+            <FiSave className="w-5 h-5" />
+            {loading ? "Enregistrement..." : "Enregistrer"}
+          </button>
+        </div>
+      </form>
+    </>
+  );
 }

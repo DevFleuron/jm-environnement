@@ -1,287 +1,410 @@
-'use client'
+// components/societes/DocumentsTab.jsx
+"use client";
 
-import { useState, useRef } from 'react'
-import { useDocuments } from '@/hooks/useDocuments'
+import { useState, useRef } from "react";
+import { useDocuments } from "@/hooks/useDocuments";
+import { useAuth } from "@/components/AuthProvider";
 import {
   uploadDocument,
   downloadDocument,
   deleteDocument,
-} from '@/features/documents/api/documentsApi'
-import { MdOutlineDownloadForOffline } from 'react-icons/md'
-import { PiUploadSimpleBold } from 'react-icons/pi'
+} from "@/features/documents/api/documentsApi";
+import Toast from "@/components/ui/Toast";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { MdOutlineDownloadForOffline } from "react-icons/md";
+import { PiUploadSimpleBold } from "react-icons/pi";
+import { FiTrash2, FiDownload, FiFile } from "react-icons/fi";
 
 const TYPES_DOCUMENTS = [
-  { value: 'devis', label: 'Devis' },
-  { value: 'facture', label: 'Facture' },
-  { value: 'contrat', label: 'Contrat' },
-  { value: 'attestation', label: 'Attestation' },
-  { value: 'certificat', label: 'Certificat' },
-  { value: 'autre', label: 'Autre' },
-]
+  { value: "devis", label: "Devis" },
+  { value: "facture", label: "Facture" },
+  { value: "contrat", label: "Contrat" },
+  { value: "attestation", label: "Attestation" },
+  { value: "certificat", label: "Certificat" },
+  { value: "autre", label: "Autre" },
+];
 
-const DOCUMENTS_REQUIS = ['devis', 'contrat']
+const DOCUMENTS_REQUIS = ["devis", "contrat"];
 
 export default function DocumentsTab({ societeId }) {
-  const { documents, loading, refetch } = useDocuments(societeId)
-  const [uploading, setUploading] = useState(false)
-  const [selectedDocs, setSelectedDocs] = useState([])
-  const fileInputRef = useRef(null)
+  const { isAdmin } = useAuth();
+  const { documents, loading, refetch } = useDocuments(societeId);
+  const [uploading, setUploading] = useState(false);
+  const [selectedDocs, setSelectedDocs] = useState([]);
+  const [toast, setToast] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const fileInputRef = useRef(null);
 
-  // 👉 état pour le modal de choix de type
-  const [showTypeModal, setShowTypeModal] = useState(false)
-  const [pendingFile, setPendingFile] = useState(null)
-  const [selectedTypeForModal, setSelectedTypeForModal] = useState('')
+  const [showTypeModal, setShowTypeModal] = useState(false);
+  const [pendingFile, setPendingFile] = useState(null);
+  const [selectedTypeForModal, setSelectedTypeForModal] = useState("");
 
-  const typesPresents = documents.map((d) => d.type)
+  const typesPresents = documents.map((d) => d.type);
+  const typesDisponibles = TYPES_DOCUMENTS.filter(
+    (t) => !typesPresents.includes(t.value)
+  );
+  const documentsManquants = DOCUMENTS_REQUIS.filter(
+    (type) => !typesPresents.includes(type)
+  );
 
-  // 👉 Types encore disponibles (non utilisés)
-  const typesDisponibles = TYPES_DOCUMENTS.filter((t) => !typesPresents.includes(t.value))
-
-  const documentsManquants = DOCUMENTS_REQUIS.filter((type) => !typesPresents.includes(type))
-
-  const getTypeLabel = (type) => TYPES_DOCUMENTS.find((t) => t.value === type)?.label || type
+  const getTypeLabel = (type) =>
+    TYPES_DOCUMENTS.find((t) => t.value === type)?.label || type;
 
   async function handleFileSelect(e) {
-    const file = e.target.files[0]
-    if (!file) return
+    const file = e.target.files[0];
+    if (!file) return;
 
-    if (file.type !== 'application/pdf') {
-      alert('Seuls les fichiers PDF sont acceptés')
-      fileInputRef.current.value = ''
-      return
+    if (file.type !== "application/pdf") {
+      setToast({
+        type: "error",
+        message: "Seuls les fichiers PDF sont acceptés",
+      });
+      fileInputRef.current.value = "";
+      return;
     }
 
     if (typesDisponibles.length === 0) {
-      alert('Tous les types de documents sont déjà utilisés.')
-      fileInputRef.current.value = ''
-      return
+      setToast({
+        type: "warning",
+        message: "Tous les types de documents sont déjà utilisés.",
+      });
+      fileInputRef.current.value = "";
+      return;
     }
 
-    // 👉 on garde le fichier en attente et on ouvre le modal
-    setPendingFile(file)
-    setSelectedTypeForModal(typesDisponibles[0]?.value || '')
-    setShowTypeModal(true)
-
-    // on reset l'input pour pouvoir réuploader le même fichier si besoin
-    fileInputRef.current.value = ''
+    setPendingFile(file);
+    setSelectedTypeForModal(typesDisponibles[0]?.value || "");
+    setShowTypeModal(true);
+    fileInputRef.current.value = "";
   }
 
   async function handleConfirmType() {
     if (!pendingFile || !selectedTypeForModal) {
-      alert('Veuillez sélectionner un type de document.')
-      return
+      setToast({
+        type: "warning",
+        message: "Veuillez sélectionner un type de document.",
+      });
+      return;
     }
 
     try {
-      setUploading(true)
-      await uploadDocument(societeId, pendingFile, selectedTypeForModal)
-      await refetch()
-      // reset
-      setPendingFile(null)
-      setSelectedTypeForModal('')
-      setShowTypeModal(false)
+      setUploading(true);
+      await uploadDocument(societeId, pendingFile, selectedTypeForModal);
+      await refetch();
+      setToast({ type: "success", message: "Document importé avec succès" });
+      setPendingFile(null);
+      setSelectedTypeForModal("");
+      setShowTypeModal(false);
     } catch (error) {
-      alert(error.response?.data?.message || "Erreur lors de l'upload")
+      setToast({
+        type: "error",
+        message: error.response?.data?.message || "Erreur lors de l'upload",
+      });
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
   }
 
   function handleCancelModal() {
-    setPendingFile(null)
-    setSelectedTypeForModal('')
-    setShowTypeModal(false)
+    setPendingFile(null);
+    setSelectedTypeForModal("");
+    setShowTypeModal(false);
   }
 
   async function handleDownload(doc) {
     try {
-      await downloadDocument(doc._id, doc.fichier.nomOriginal)
+      await downloadDocument(doc._id, doc.fichier.nomOriginal);
+      setToast({ type: "success", message: "Téléchargement démarré" });
     } catch (error) {
-      alert('Erreur lors du téléchargement')
+      setToast({ type: "error", message: "Erreur lors du téléchargement" });
     }
   }
 
-  async function handleDelete(docId) {
-    if (!confirm('Voulez-vous vraiment supprimer ce document ?')) return
+  async function handleDeleteConfirm() {
     try {
-      await deleteDocument(docId)
-      refetch() // le type redevient dispo automatiquement
+      await deleteDocument(confirmDelete.id);
+      await refetch();
+      setToast({ type: "success", message: "Document supprimé avec succès" });
+      setConfirmDelete(null);
     } catch (error) {
-      alert('Erreur lors de la suppression')
+      setToast({ type: "error", message: "Erreur lors de la suppression" });
     }
   }
 
   function toggleSelectAll() {
     if (selectedDocs.length === documents.length) {
-      setSelectedDocs([])
+      setSelectedDocs([]);
     } else {
-      setSelectedDocs(documents.map((d) => d._id))
+      setSelectedDocs(documents.map((d) => d._id));
     }
   }
 
   function toggleSelect(docId) {
     if (selectedDocs.includes(docId)) {
-      setSelectedDocs(selectedDocs.filter((id) => id !== docId))
+      setSelectedDocs(selectedDocs.filter((id) => id !== docId));
     } else {
-      setSelectedDocs([...selectedDocs, docId])
+      setSelectedDocs([...selectedDocs, docId]);
     }
   }
 
   async function downloadSelected() {
     for (const docId of selectedDocs) {
-      const doc = documents.find((d) => d._id === docId)
-      if (doc) await handleDownload(doc)
+      const doc = documents.find((d) => d._id === docId);
+      if (doc) await handleDownload(doc);
     }
+    setSelectedDocs([]);
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00a3c4]"></div>
+      </div>
+    );
   }
 
   return (
     <>
-      <div className="space-y-4 grid grid-cols-2">
-        <div className="overflow-hidden">
-          <div className="px-4 py-2">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={selectedDocs.length === documents.length && documents.length > 0}
-                onChange={toggleSelectAll}
-                className="rounded h-4 w-4"
-              />
-              <span className="text-base font-bold">Tout sélectionner</span>
-            </label>
-          </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
 
-          {documents.length === 0 ? (
-            <div className="px-4 py-8 text-center text-gray-500">Aucun document</div>
-          ) : (
-            <div className="divide-y">
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={handleDeleteConfirm}
+        variant="danger"
+        title="Supprimer le document ?"
+        message={`Êtes-vous sûr de vouloir supprimer "${confirmDelete?.nom}" ?\n\nCette action est irréversible.`}
+        confirmText="Supprimer"
+        cancelText="Annuler"
+      />
+
+      <div className="space-y-4  ">
+        {/* Boutons d'action - Mobile : Stack vertical | Desktop : Horizontal à droite */}
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-3 ">
+          {/* Sélection (visible seulement si documents) */}
+          {documents.length > 0 && (
+            <div className="flex items-center ">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedDocs.length === documents.length}
+                  onChange={toggleSelectAll}
+                  className="rounded h-5 w-5"
+                />
+                <span className="text-sm md:text-base font-semibold">
+                  Tout sélectionner ({selectedDocs.length})
+                </span>
+              </label>
+            </div>
+          )}
+
+          {/* Boutons d'action */}
+          <div className="flex flex-col sm:flex-row gap-2">
+            {/* Bouton Télécharger (visible si sélection) */}
+            {selectedDocs.length > 0 && (
+              <button
+                onClick={downloadSelected}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm md:text-base font-bold bg-white border-2 border-[#0c769e] text-[#0c769e] hover:bg-[#0c769e] hover:text-white transition-colors rounded-xl"
+              >
+                <MdOutlineDownloadForOffline className="w-5 h-5" />
+                <span className="hidden sm:inline">Télécharger</span>
+                <span className="sm:hidden">
+                  Télécharger ({selectedDocs.length})
+                </span>
+              </button>
+            )}
+
+            {/* Bouton Importer (admin only) */}
+            {isAdmin && (
+              <>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileSelect}
+                  accept=".pdf"
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#0c769e] text-white rounded-xl hover:bg-[#095a7a] transition-colors disabled:opacity-50 text-sm md:text-base font-bold"
+                >
+                  <PiUploadSimpleBold className="w-5 h-5" />
+                  {uploading ? "Import..." : "Importer"}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Liste des documents */}
+        {documents.length === 0 ? (
+          <div className="bg-white rounded-lg p-8 text-center ">
+            <FiFile className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+            <p className="text-gray-500 text-lg">Aucun document</p>
+            {isAdmin && (
+              <p className="text-sm text-gray-400 mt-2">
+                Cliquez sur "Importer" pour ajouter votre premier document
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+            {/* Header desktop uniquement */}
+            <div className="hidden md:grid md:grid-cols-[auto_1fr_auto_auto] gap-4 px-4 py-3 bg-gray-50 border-b font-semibold text-sm text-gray-700">
+              <div className="w-12"></div>
+              <div>Document</div>
+              <div className="w-24 text-center">Actions</div>
+            </div>
+
+            {/* Liste */}
+            <div className="divide-y bg-[#00a3c4]/15">
               {documents.map((doc) => (
-                <div key={doc._id} className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50">
-                  <input
-                    type="checkbox"
-                    checked={selectedDocs.includes(doc._id)}
-                    onChange={() => toggleSelect(doc._id)}
-                    className="rounded"
-                  />
-                  <svg
-                    className="w-5 h-5 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                <div
+                  key={doc._id}
+                  className="flex flex-col md:grid md:grid-cols-[auto_1fr_auto] gap-3 md:gap-4 px-4 py-4 hover:bg-gray-50 transition-colors"
+                >
+                  {/* Checkbox + Icône + Infos */}
+                  <div className="flex items-start gap-3 flex-1">
+                    <input
+                      type="checkbox"
+                      checked={selectedDocs.includes(doc._id)}
+                      onChange={() => toggleSelect(doc._id)}
+                      className="rounded h-5 w-5 mt-1 shrink-0"
                     />
-                  </svg>
-                  <div className="flex-1">
-                    <div className="font-medium">{doc.nom}</div>
-                    <div className="text-sm text-gray-500">
-                      {getTypeLabel(doc.type)} •{' '}
-                      {new Date(doc.createdAt).toLocaleDateString('fr-FR')}
+
+                    <FiFile className="w-5 h-5 text-gray-400 shrink-0 mt-1" />
+
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-gray-900 truncate">
+                        {doc.nom}
+                      </div>
+                      <div className="text-sm text-gray-500 mt-1">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {getTypeLabel(doc.type)}
+                        </span>
+                        <span className="mx-2">•</span>
+                        {new Date(doc.createdAt).toLocaleDateString("fr-FR")}
+                      </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleDownload(doc)}
-                    className="text-sky-500 hover:text-sky-600"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => handleDelete(doc._id)}
-                    className="text-red-500 hover:text-red-600"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 md:justify-end ml-8 md:ml-0">
+                    <button
+                      onClick={() => handleDownload(doc)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#0c769e] hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Télécharger"
+                    >
+                      <FiDownload className="w-4 h-4" />
+                      <span className="md:hidden">Télécharger</span>
+                    </button>
+
+                    {isAdmin && (
+                      <button
+                        onClick={() =>
+                          setConfirmDelete({ id: doc._id, nom: doc.nom })
+                        }
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Supprimer"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                        <span className="md:hidden">Supprimer</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="w-fit ml-auto flex flex-col justify-items-end space-y-8 ">
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileSelect}
-            accept=".pdf"
-            className="hidden"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            className="flex items-center text-base font-bold gap-2 px-4 py-2 bg-[#0c769e] text-white rounded-2xl cursor-pointer hover:bg-white hover:text-[#0c769e] transition-all duration-180 disabled:opacity-50"
-          >
-            <PiUploadSimpleBold className="w-6 h-6" />
-            {uploading ? 'Import...' : 'Importer'}
-          </button>
-          <button
-            onClick={downloadSelected}
-            disabled={selectedDocs.length === 0}
-            className="flex items-center gap-2 px-4 py-2 text-base font-bold bg-white border-3 cursor-pointer border-[#0c769e] hover:bg-[#0c769e] hover:text-white transition-all duration-180 rounded-2xl"
-          >
-            <MdOutlineDownloadForOffline className="w-6 h-6" />
-            Télécharger
-          </button>
-        </div>
+        {/* Documents manquants (warning) */}
+        {documentsManquants.length > 0 && (
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-yellow-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-yellow-700 font-medium">
+                  Documents manquants :{" "}
+                  {documentsManquants.map(getTypeLabel).join(", ")}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* MODAL DE CHOIX DE TYPE */}
+      {/* MODAL DE CHOIX DE TYPE - Responsive */}
       {showTypeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
-            <h2 className="text-lg font-bold mb-2">Type de document</h2>
-            {pendingFile && (
-              <p className="text-sm text-gray-600 mb-4">
-                Fichier : <span className="font-medium">{pendingFile.name}</span>
-              </p>
-            )}
-
-            <div className="space-y-2 max-h-52 overflow-y-auto mb-4">
-              {typesDisponibles.length === 0 ? (
-                <p className="text-sm text-gray-500">
-                  Tous les types de documents sont déjà utilisés.
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 animate-fadeIn">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md max-h-[90vh] sm:max-h-[80vh] overflow-hidden animate-slideUpMobile sm:animate-scaleIn">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-gray-900">
+                Type de document
+              </h2>
+              {pendingFile && (
+                <p className="text-sm text-gray-600 mt-1 truncate">
+                  <span className="font-medium">{pendingFile.name}</span>
                 </p>
-              ) : (
-                typesDisponibles.map((type) => (
-                  <label
-                    key={type.value}
-                    className="flex items-center gap-2 cursor-pointer text-sm"
-                  >
-                    <input
-                      type="radio"
-                      name="type-document"
-                      value={type.value}
-                      checked={selectedTypeForModal === type.value}
-                      onChange={(e) => setSelectedTypeForModal(e.target.value)}
-                      className="h-4 w-4"
-                    />
-                    <span>{type.label}</span>
-                  </label>
-                ))
               )}
             </div>
 
-            <div className="flex justify-end gap-3">
+            {/* Liste des types */}
+            <div className="px-6 py-4 max-h-64 overflow-y-auto">
+              {typesDisponibles.length === 0 ? (
+                <p className="text-sm text-gray-500 text-center py-4">
+                  Tous les types de documents sont déjà utilisés.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {typesDisponibles.map((type) => (
+                    <label
+                      key={type.value}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                    >
+                      <input
+                        type="radio"
+                        name="type-document"
+                        value={type.value}
+                        checked={selectedTypeForModal === type.value}
+                        onChange={(e) =>
+                          setSelectedTypeForModal(e.target.value)
+                        }
+                        className="h-5 w-5 flex-shrink-0"
+                      />
+                      <span className="text-sm font-medium">{type.label}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row gap-2 sm:justify-end">
               <button
                 type="button"
                 onClick={handleCancelModal}
-                className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2.5 text-sm font-medium rounded-lg border-2 border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
               >
                 Annuler
               </button>
@@ -289,14 +412,14 @@ export default function DocumentsTab({ societeId }) {
                 type="button"
                 onClick={handleConfirmType}
                 disabled={!selectedTypeForModal || uploading}
-                className="px-4 py-2 text-sm font-medium rounded-lg bg-[#0c769e] text-white hover:bg-[#095b79] disabled:opacity-50"
+                className="px-4 py-2.5 text-sm font-medium rounded-lg bg-[#0c769e] text-white hover:bg-[#095a7a] disabled:opacity-50 transition-colors"
               >
-                {uploading ? 'Import...' : 'Confirmer'}
+                {uploading ? "Import..." : "Confirmer"}
               </button>
             </div>
           </div>
         </div>
       )}
     </>
-  )
+  );
 }
