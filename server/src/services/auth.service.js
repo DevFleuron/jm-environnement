@@ -9,7 +9,6 @@ function generateToken(userId) {
 
 export async function login(username, password) {
   // On vérifie que les champs sont fournis
-  console.log("🔵 Login attempt:", { username, password });
   if (!username || !password) {
     console.log("❌ Missing credentials");
     throw new Error("Identifiant et mot de passe requis ");

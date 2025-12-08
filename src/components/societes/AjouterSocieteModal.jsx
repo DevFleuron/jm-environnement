@@ -1,90 +1,96 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createSociete } from '@/features/societes/api/societesApi'
-import { RxCross2 } from 'react-icons/rx'
+import { useState } from "react";
+import { createSociete } from "@/features/societes/api/societesApi";
+import { RxCross2 } from "react-icons/rx";
 
 const initialFormData = {
-  nom: '',
-  raisonSociale: '',
-  secteurActivite: '',
-  formeJuridique: '',
-  numeroSiret: '',
-  numeroSiren: '',
-  adresse: '',
-  codePostal: '',
-  ville: '',
+  nom: "",
+  raisonSociale: "",
+  secteurActivite: "",
+  formeJuridique: "",
+  numeroSiret: "",
+  numeroSiren: "",
+  adresse: "",
+  codePostal: "",
+  ville: "",
   contact: {
-    civilite: '',
-    prenom: '',
-    nom: '',
-    telephone: '',
-    mobile: '',
-    email: '',
-    fonction: '',
+    civilite: "",
+    prenom: "",
+    nom: "",
+    telephone: "",
+    mobile: "",
+    email: "",
+    fonction: "",
   },
-}
+};
 
 export default function AjouterSocieteModal({ onClose, onCreated }) {
-  const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState(initialFormData)
-  const [errors, setErrors] = useState([])
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(initialFormData);
+  const [errors, setErrors] = useState([]);
 
   function handleChange(e) {
-    setErrors([])
-    const { name, value } = e.target
-    if (name.startsWith('contact.')) {
-      const field = name.split('.')[1]
+    setErrors([]);
+    const { name, value } = e.target;
+    if (name.startsWith("contact.")) {
+      const field = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
         contact: { ...prev.contact, [field]: value },
-      }))
+      }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }))
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   }
 
-  const sirenRegex = /^\d{3}\s?\d{3}\s?\d{3}$/
-  const siretRegex = /^\d{3}\s?\d{3}\s?\d{3}\s?\d{5}$/
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const sirenRegex = /^\d{3}\s?\d{3}\s?\d{3}$/;
+  const siretRegex = /^\d{3}\s?\d{3}\s?\d{3}\s?\d{5}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   async function handleSubmit(e) {
-    e.preventDefault()
-    const newErrors = []
+    e.preventDefault();
+    const newErrors = [];
 
-    if (!formData.nom.trim()) newErrors.push('Le nom de la société est obligatoire')
-    if (!formData.ville.trim()) newErrors.push('La ville est obligatoire')
-    if (!formData.codePostal.trim()) newErrors.push('Le code postal est obligatoire')
-    if (!sirenRegex.test((formData.numeroSiren || '').trim()))
-      newErrors.push('Numéro de SIREN invalide ou manquant')
-    if (!siretRegex.test((formData.numeroSiret || '').trim()))
-      newErrors.push('Numéro de SIRET invalide ou manquant')
-    if (!emailRegex.test((formData.contact.email || '').trim()))
-      newErrors.push('Email invalide ou manquant')
+    if (!formData.nom.trim())
+      newErrors.push("Le nom de la société est obligatoire");
+    if (!formData.ville.trim()) newErrors.push("La ville est obligatoire");
+    if (!formData.codePostal.trim())
+      newErrors.push("Le code postal est obligatoire");
+    if (!sirenRegex.test((formData.numeroSiren || "").trim()))
+      newErrors.push("Numéro de SIREN invalide ou manquant");
+    if (!siretRegex.test((formData.numeroSiret || "").trim()))
+      newErrors.push("Numéro de SIRET invalide ou manquant");
+    if (!emailRegex.test((formData.contact.email || "").trim()))
+      newErrors.push("Email invalide ou manquant");
 
     // Champs contact obligatoires
-    if (!formData.contact.prenom.trim()) newErrors.push('Le prénom du contact est obligatoire')
-    if (!formData.contact.nom.trim()) newErrors.push('Le nom du contact est obligatoire')
-    if (!formData.contact.email.trim()) newErrors.push('L’email du contact est obligatoire')
+    if (!formData.contact.prenom.trim())
+      newErrors.push("Le prénom du contact est obligatoire");
+    if (!formData.contact.nom.trim())
+      newErrors.push("Le nom du contact est obligatoire");
+    if (!formData.contact.email.trim())
+      newErrors.push("L’email du contact est obligatoire");
 
-    // 2️⃣ Si newErrors → on bloque l’envoi
+    // 2️ Si newErrors → on bloque l’envoi
     if (newErrors.length > 0) {
-      setErrors(newErrors)
-      return
+      setErrors(newErrors);
+      return;
     }
 
     try {
-      setLoading(true)
-      const societe = await createSociete(formData)
-      onCreated(societe)
+      setLoading(true);
+      const societe = await createSociete(formData);
+      onCreated(societe);
     } catch (error) {
-      alert(error.response?.data?.message || 'Erreur lors de la création')
+      alert(error.response?.data?.message || "Erreur lors de la création");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  const inputClass = 'w-full px-3 py-2 border rounded-lg outline-none focus:outline-none'
+  const inputClass =
+    "w-full px-3 py-2 border rounded-lg outline-none focus:outline-none";
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -216,7 +222,6 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
                   <option value="">Civilité</option>
                   <option value="M.">M.</option>
                   <option value="Mme">Mme</option>
-                  <option value="Autre">Autre</option>
                 </select>
               </div>
               <div>
@@ -312,11 +317,11 @@ export default function AjouterSocieteModal({ onClose, onCreated }) {
               disabled={loading}
               className="px-4 py-3 bg-[#0c769e] font-bold text-white rounded-xl border hover:bg-white hover:text-[#0c769e] hover:border-[#0c769e] transition-all duration-300 disabled:opacity-50 cursor-pointer flex items-center gap-2"
             >
-              {loading ? 'Enregistrement...' : 'Enregistrer'}
+              {loading ? "Enregistrement..." : "Enregistrer"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "JM-Environnement",
+  title: "JM-Environnement-societe",
   description: "Gestion des sociétés et installations",
 };
 

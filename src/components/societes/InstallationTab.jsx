@@ -109,7 +109,7 @@ export default function InstallationTab({ societeId }) {
           </h3>
 
           {/* Nom de l'auditeur */}
-          <div className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 md:items-center md:w-[31%]">
+          <div className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 md:items-center lg:w-[63%] xl:w-[31%]">
             <label className={labelClass}>Nom de l'auditeur</label>
             <input
               type="text"
@@ -185,7 +185,7 @@ export default function InstallationTab({ societeId }) {
           </h3>
 
           {/* Nom de l'installateur */}
-          <div className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 md:items-center w-[31%]">
+          <div className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 md:items-center lg:w-[63%] xl:w-[31%]">
             <label className={labelClass}>Nom de l'installateur</label>
             <input
               type="text"
@@ -198,7 +198,7 @@ export default function InstallationTab({ societeId }) {
           </div>
 
           {/* Type de produit */}
-          <div className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 md:items-center w-[31%]">
+          <div className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 lg:w-[63%] md:items-center xl:w-[31%]">
             <label className={labelClass}>Type de produit</label>
             <input
               type="text"
@@ -269,7 +269,7 @@ export default function InstallationTab({ societeId }) {
               value={formData.commentaire}
               onChange={handleChange}
               rows={3}
-              className={`px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0c769e] focus:border-transparent bg-white w-[31%] resize-none `}
+              className={`px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0c769e] focus:border-transparent bg-white xl:w-[31%] resize-none `}
             />
             <p className="text-xs text-gray-500">
               {formData.commentaire.length} caractères
